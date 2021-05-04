@@ -7,11 +7,11 @@
 convex_combination(x1, x2, lambda)
 }
 \arguments{
-\item{x1}{vector}
+\item{x1}{a vector.}
 
-\item{x2}{vector}
+\item{x2}{a vector.}
 
-\item{lambda}{numeric}
+\item{lambda}{a numeric value between 0 and 1.}
 }
 \value{
 vector

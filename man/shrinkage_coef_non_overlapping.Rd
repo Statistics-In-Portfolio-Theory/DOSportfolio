@@ -17,6 +17,3 @@ numeric
 \description{
 Computes the shrinkage coefficient for non-overlapping samples.
 }
-\examples{
-shrinkage_coef_non_overlapping(1, 0.5)
-}

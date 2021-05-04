@@ -1,14 +1,22 @@
 #' Computes the GMV weights when shrinking dynamically with overlapping samples.
 #'
-#' @param data matrix in long format containing, for instance, log returns.
-#' @param break_points vector of break points. The breakpoints are what determines
+#' @param data a matrix in long format containing, for instance, log-returns.
+#' @param break_points a vector of break points. The breakpoints are what determines
 #' when we recompute weights.
-#' @param target_w the target weights that one wants to shrink to in the first period.
+#' @param target_w a vector which is the target weights that one wants to shrink to in the first period.
+#' @param R a numeric of the initial value of the relative loss for the variance of the GMV portfolio.
 #'
-#' @return
+#' @return vector of portfolio weights
 #' @export
 #'
 #' @examples
+#' n <- 200*2
+#' p <- 80
+#' c <- p/n
+#' break_points <- c(199)
+#' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
+#' target_w <- as.vector(rep(1,p))/p
+#' w_overlapping(data, break_points, target_w, 1)
 #'
 w_overlapping <- function(data, break_points, target_w, R) {
   # TODO: make sure that data has correct format/types in cols.
@@ -51,9 +59,9 @@ w_overlapping <- function(data, break_points, target_w, R) {
 #' Function which computes the coefficients (denoted beta) for the recursive formulas
 #' in determining K from Bodnar et. al. 2021
 #'
-#' @param i integer
-#' @param j integer
-#' @param Psi vector of
+#' @param i integer a integer greater than one.
+#' @param j integer a integer greater than one.
+#' @param Psi vector of shrinkage coefficients.
 #'
 #' @return
 compute_beta <- function(i,j,Psi){
@@ -68,10 +76,10 @@ compute_beta <- function(i,j,Psi){
 
 #' The recursive scheme for updating the relative loss in the overlapping scheme.
 #'
-#' @param Psi
-#' @param c
-#' @param prev_R
-#' @param K
+#' @param Psi vector of shrinkage coefficients.
+#' @param c numeric between 0 and 1. It is the concentration ration.
+#' @param prev_R numeric greater than 0, The previous value of the relative loss
+#' @param K numeric parameter.
 #'
 #' @return
 R_update_overlapping <- function(Psi, c, prev_R, K){
@@ -80,8 +88,8 @@ R_update_overlapping <- function(Psi, c, prev_R, K){
 
 #' A small helper function which computes the terms D_{ij} from Bodnar et al. 2021
 #'
-#' @param Ci
-#' @param Cj
+#' @param Ci numeric concentration ratio of period i
+#' @param Cj numeric concentration ratio of period j
 #'
 #' @return
 

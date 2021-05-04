@@ -7,9 +7,7 @@
 w_gmv(S_inv)
 }
 \arguments{
-\item{r_prev}{numeric}
-
-\item{c}{numeric}
+\item{S_inv}{the inverse of a sample covariance matrix}
 }
 \value{
 vector

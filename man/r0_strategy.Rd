@@ -2,20 +2,22 @@
 % Please edit documentation in R/utils.R
 \name{r0_strategy}
 \alias{r0_strategy}
-\title{Computes a simple plugin init for the computation of}
+\title{Computes a simple plugin estimator for the computation of relative loss to the variance of the GMV portfolio}
 \usage{
-r0_strategy(S_inv, S, b, c)
+r0_strategy(S_inv, S, target_w, c)
 }
 \arguments{
-\item{lambda}{numeric}
+\item{S_inv}{the inverse of a sample covariance matrix.}
 
-\item{x1}{vector}
+\item{S}{a sample covariance matrix.}
 
-\item{x2}{vector}
+\item{target_w}{a vector representing the target portfolio.}
+
+\item{c}{a numeric which is the concentration ratio.}
 }
 \value{
 vector
 }
 \description{
-Computes a simple plugin init for the computation of
+Computes a simple plugin estimator for the computation of relative loss to the variance of the GMV portfolio
 }

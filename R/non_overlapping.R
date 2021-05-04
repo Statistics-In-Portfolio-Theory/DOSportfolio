@@ -1,12 +1,24 @@
 #' Computes the GMV portfolio using the optimal weighting scheme where each weight is based of non-overlapping samples.
 #'
-#' @param break_points the number and time points (row number) of break points
-#' @param target_w vector with the target portfolio
-#' @param data data.frame on long format. Contains log returns.
+#' @param data a matrix in long format containing, for instance, log-returns.
+#' @param break_points a vector of break points. The breakpoints are what determines
+#' when we recompute weights.
+#' @param target_w a vector which is the target weights that one wants to shrink to in the first period.
+#' @param r a numeric of the initial value of the relative loss for the variance of the GMV portfolio.
 #'
 #' @export
 #'
-#' @return vector
+#' @return vector of portfolio weights
+#'
+#' @examples
+#' n <- 200*2
+#' p <- 80
+#' c <- p/n
+#' break_points <- c(199)
+#' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
+#' target_w <- as.vector(rep(1,p))/p
+#' w_non_overlapping(data, break_points, target_w, 1)
+#'
 w_non_overlapping <- function(data, break_points, target_w, r) {
   # TODO: make sure that data has correct format/types in cols.
   stopifnot(sum(target_w) == 1)

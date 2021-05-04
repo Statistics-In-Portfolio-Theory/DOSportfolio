@@ -19,6 +19,3 @@ numeric
 \description{
 Function which updates values of r0.
 }
-\examples{
-shrinkage_coef(1, 0.5)
-}
