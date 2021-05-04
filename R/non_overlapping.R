@@ -1,25 +1,36 @@
-#' Computes the shrunk GMV portfolio weights
+#' Computes the GMV portfolio using the optimal weighting scheme where each weight is based of non-overlapping samples.
 #'
+#' @param break_points the number and time points (row number) of break points
+#' @param target_w vector with the target portfolio
 #' @param data data.frame on long format. Contains log returns.
-#' @param r_previous numeric
-#' @param w_target vector
+#'
 #' @export
 #'
 #' @return vector
-w_non_overlapping <- function(data, w_random_target, r_previous) {
+w_non_overlapping <- function(data, break_points, target_w, r) {
   # TODO: make sure that data has correct format/types in cols.
-
-  stopifnot(sum(w_random_target) == 1)
-  n <- nrow(data)
+  stopifnot(sum(target_w) == 1)
   p <- ncol(data)
-  c <- p/n
-  # Theory assumes that c is less than one though the analytical formulas do not.
-  stopifnot(c < 1)
-  S_chol <- chol(stats::var(data))
-  S_chol_inv <- t(solve(S_chol))
-  w_gmv_new <- w_gmv(S_chol_inv %*% t(S_chol_inv))
-  xi <- shrinkage_coef_non_overlapping(c, r_previous)
-  convex_combination(w_gmv_new, w_random_target, xi)
+  break_points <- c(1,break_points)
+  for (idx in 2:length(break_points)) {
+    data_subsample <- data[(break_points[idx-1]):break_points[idx],]
+    c <- p/nrow(data_subsample)
+    S <- stats::var(data_subsample)
+    S_chol_inv <- t(solve(chol(S)))
+    if (idx - 1 == 1) {
+      old_weights <- target_w
+    }else{
+      r <- r_update(xi, c, r_prev = r)
+      old_weights <- w_gmv_new
+    }
+    xi <- shrinkage_coef_non_overlapping(c, r)
+    # use the new info to estimate r recursively
+    w_gmv_new <- convex_combination(
+      w_gmv(S_chol_inv %*% t(S_chol_inv)),
+      old_weights,
+      xi)
+  }
+  w_gmv_new
 }
 
 
@@ -29,9 +40,7 @@ w_non_overlapping <- function(data, w_random_target, r_previous) {
 #' @param c numeric
 #'
 #' @return numeric
-#' @export
 #'
-#' @examples shrinkage_coef_non_overlapping(1, 0.5)
 shrinkage_coef_non_overlapping <- function(r_prev, c) {
   (1 - c) * r_prev / ((1 - c) * r_prev + c)
 }
@@ -43,9 +52,7 @@ shrinkage_coef_non_overlapping <- function(r_prev, c) {
 #' @param r_prev numeric in range of (0,1)
 #'
 #' @return numeric
-#' @export
 #'
-#' @examples shrinkage_coef(1, 0.5)
 r_update <- function(xi, c, r_prev) {
   xi^2 * c / (1 - c) + (1 - xi)^2 * r_prev
 }
