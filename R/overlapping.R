@@ -1,6 +1,11 @@
-#' Computes the GMV weights when shrinking dynamically with overlapping samples.
+#' The (overlapping) Global Minimum Variance (GMV) portfolio using a dynamic optimal shrinkage scheme.
 #'
-#' @param data a matrix in long format containing, for instance, log-returns.
+#' This function implements the second version of the recursive estimation of the GMV portfolio in the dynamic optimal shrinkage setting.
+#' The difference between this function and the function \code{wGMVNonOverlapping(...)} is that this function estimates each GMV portfolio using
+#' all available data. To see a more detailed description of the method, see vigenette
+#' \code{vignette("DOSPortfolio", package = "DOSPortfolio")}.
+#'
+#' @param data a matrix of size (n x p), where n>p, containing, for instance, log-returns.
 #' @param break_points a vector of break points. The breakpoints are what determines
 #' when we recompute weights.
 #' @param target_w a vector which is the target weights that one wants to shrink to in the first period.
@@ -16,11 +21,9 @@
 #' break_points <- c(199)
 #' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 #' target_w <- as.vector(rep(1,p))/p
-#' w_overlapping(data, break_points, target_w, 1)
+#' wGMVOverlapping(data, break_points, target_w, 1)
 #'
-w_overlapping <- function(data, break_points, target_w, R) {
-  # TODO: make sure that data has correct format/types in cols.
-  stopifnot(sum(target_w) == 1)
+wGMVOverlapping <- function(data, break_points, target_w, R) {
   p <- ncol(data)
   # Theory assumes that c is less than one though the analytical formulas do not
   K <- 1
@@ -37,34 +40,35 @@ w_overlapping <- function(data, break_points, target_w, R) {
       old_weights <- w_gmv_new
       tmp <- c()
       for (j in 1:(idx-1)){
-        tmp <- c(tmp, compute_beta(idx-1, j, Psi_vec)*compute_D(c_vec[j], c_vec[idx]))
+        tmp <- c(tmp, ComputeBeta(idx-1, j, Psi_vec)*ComputeD(c_vec[j], c_vec[idx]))
       }
-      K <-  compute_beta(0, idx-1, Psi_vec) + sum(tmp)
+      K <-  ComputeBeta(0, idx-1, Psi_vec) + sum(tmp)
     }
     psi <- ((R +1) - K) / (
       (R +1) + 1/(1-c_vec[idx]) - 2*K
     )
     Psi_vec <- c(Psi_vec, psi)
-    R <- R_update_overlapping(psi, c_vec[idx], R, K)
+    R <- rUpdateOverlapping(psi, c_vec[idx], R, K)
     # Compute the GMV portfolio according to the current subsample.
     # Use chol decomp since its supposed to invert faster.
-    w_gmv_new <- convex_combination(
-      w_gmv(S_chol_inv %*% t(S_chol_inv)),
+    w_gmv_new <- ConvexCombination(
+      wGMV(S_chol_inv %*% t(S_chol_inv)),
       old_weights,
       psi)
   }
-  w_gmv_new
+  structure(w_gmv_new, class="DOSPortfolio")
 }
 
-#' Function which computes the coefficients (denoted beta) for the recursive formulas
-#' in determining K from Bodnar et. al. 2021
+#' A helper function for computation of coefficients.
+#'
+#' Function which computes the coefficients (denoted beta) for the recursive formulas in determining K from Bodnar et. al. 2021
 #'
 #' @param i integer a integer greater than one.
 #' @param j integer a integer greater than one.
 #' @param Psi vector of shrinkage coefficients.
 #'
-#' @return
-compute_beta <- function(i,j,Psi){
+#' @return a number
+ComputeBeta <- function(i,j,Psi){
   if (i==0){
     return(prod((1-Psi[1:i])))
   }
@@ -81,8 +85,8 @@ compute_beta <- function(i,j,Psi){
 #' @param prev_R numeric greater than 0, The previous value of the relative loss
 #' @param K numeric parameter.
 #'
-#' @return
-R_update_overlapping <- function(Psi, c, prev_R, K){
+#' @return a number
+rUpdateOverlapping <- function(Psi, c, prev_R, K){
   Psi^2 * c/(1-c) + (1-Psi)^2*prev_R + 2*Psi*(1-Psi)*(K-1)
 }
 
@@ -91,9 +95,8 @@ R_update_overlapping <- function(Psi, c, prev_R, K){
 #' @param Ci numeric concentration ratio of period i
 #' @param Cj numeric concentration ratio of period j
 #'
-#' @return
-
-compute_D <- function(Ci,Cj) {
+#' @return a number
+ComputeD <- function(Ci,Cj) {
   1- 2*(1-Cj)/(
     (1-Cj) + (1-Ci)*Cj/Ci + sqrt((1-Cj/Ci)^2 + 4*(1-Ci)*Cj/Ci)
   )

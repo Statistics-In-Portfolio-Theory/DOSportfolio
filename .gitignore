@@ -4,3 +4,4 @@
 .httr-oauth
 .DS_Store
 workflow.R
+inst/doc

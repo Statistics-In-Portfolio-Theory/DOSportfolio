@@ -1,5 +1,5 @@
-Package: DOSPorfolio
-Title: Dynamic shrinkage of optimal portfolios
+Package: DOSPortfolio
+Title: Dynamic Optimal Shrinkage of Portfolios
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Erik",
@@ -7,14 +7,18 @@ Authors@R:
            role = c("aut", "cre"),
            email = "erik.thorsen@math.su.se",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: This package contains a number of methods which construct dynamic portfolios.
+Description: This package contains a number of methods which construct Dynamic portfolios.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Imports: 
+Imports:
+    DOSPorfolio,
     stats
+VignetteBuilder: knitr

@@ -1,6 +1,12 @@
-#' Computes the GMV portfolio using the optimal weighting scheme where each weight is based of non-overlapping samples.
+#' The (non overlapping) Global Minimum Variance (GMV) portfolio using a dynamic optimal shrinkage scheme.
 #'
-#' @param data a matrix in long format containing, for instance, log-returns.
+#' This function implements the recursive estimation of the GMV portfolio in the dynamic optimal shrinkage setting.
+#' The method demands that the data is on long format, observations are on rows and covariates are columns and that
+#' the number of rows are greater than the number of columns. This function estimates each GMV portfolio
+#' using the most recent data, e.g. from the last break point to the current. To see a more detailed description of the method, see
+#' vigenette \code{vignette("DOSPortfolio", package = "DOSPortfolio")}.
+#'
+#' @param data a matrix of size (n x p), where n>p, containing, for instance, log-returns.
 #' @param break_points a vector of break points. The breakpoints are what determines
 #' when we recompute weights.
 #' @param target_w a vector which is the target weights that one wants to shrink to in the first period.
@@ -8,7 +14,7 @@
 #'
 #' @export
 #'
-#' @return vector of portfolio weights
+#' @return vector of shrunk GMV portfolio weights
 #'
 #' @examples
 #' n <- 200*2
@@ -17,13 +23,13 @@
 #' break_points <- c(199)
 #' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 #' target_w <- as.vector(rep(1,p))/p
-#' w_non_overlapping(data, break_points, target_w, 1)
+#' wGMVNonOverlapping(data, break_points, target_w, 1)
 #'
-w_non_overlapping <- function(data, break_points, target_w, r) {
-  # TODO: make sure that data has correct format/types in cols.
-  stopifnot(sum(target_w) == 1)
+wGMVNonOverlapping <- function(data, break_points, target_w, r) {
   p <- ncol(data)
-  break_points <- c(1,break_points)
+  if (!((break_points[1] == 1) && (length(break_points) > 2))) {
+    break_points <- c(1,break_points)
+  }
   for (idx in 2:length(break_points)) {
     data_subsample <- data[(break_points[idx-1]):break_points[idx],]
     c <- p/nrow(data_subsample)
@@ -32,17 +38,17 @@ w_non_overlapping <- function(data, break_points, target_w, r) {
     if (idx - 1 == 1) {
       old_weights <- target_w
     }else{
-      r <- r_update(xi, c, r_prev = r)
+      r <- Rupdate(xi, c, r_prev = r)
       old_weights <- w_gmv_new
     }
-    xi <- shrinkage_coef_non_overlapping(c, r)
+    xi <- ShrinkageCoefNonOverlapping(c, r)
     # use the new info to estimate r recursively
-    w_gmv_new <- convex_combination(
-      w_gmv(S_chol_inv %*% t(S_chol_inv)),
+    w_gmv_new <- ConvexCombination(
+      wGMV(S_chol_inv %*% t(S_chol_inv)),
       old_weights,
       xi)
   }
-  w_gmv_new
+  structure(w_gmv_new, class="DOSPortfolio")
 }
 
 
@@ -53,7 +59,7 @@ w_non_overlapping <- function(data, break_points, target_w, r) {
 #'
 #' @return numeric
 #'
-shrinkage_coef_non_overlapping <- function(r_prev, c) {
+ShrinkageCoefNonOverlapping <- function(r_prev, c) {
   (1 - c) * r_prev / ((1 - c) * r_prev + c)
 }
 
@@ -65,6 +71,6 @@ shrinkage_coef_non_overlapping <- function(r_prev, c) {
 #'
 #' @return numeric
 #'
-r_update <- function(xi, c, r_prev) {
+Rupdate <- function(xi, c, r_prev) {
   xi^2 * c / (1 - c) + (1 - xi)^2 * r_prev
 }
