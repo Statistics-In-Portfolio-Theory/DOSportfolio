@@ -9,14 +9,14 @@ new_DOSPortfolio(data, change_points, target_w, relative_loss, shrinkage_type)
 \arguments{
 \item{data}{a matrix of size (n x p), where n>p, containing, for instance, log-returns.}
 
-\item{change_points}{a vector of break points. The breakpoints are what determines
-when we recompute weights.}
+\item{change_points}{a vector of change points. The change points are what determines when we recompute weights.}
 
 \item{target_w}{a vector which is the target weights that one wants to shrink to in the first period.}
 
-\item{relative_loss}{a numeric of the initial value of the relative loss for the variance of the GMV portfolio.}
+\item{relative_loss}{possibly a numeric or NULL. The initial value of the relative loss for the variance of the GMV portfolio.
+If its NULL, then it will be initialized with the first subsample and the function \code{\link{r0Strategy}}.}
 
-\item{shrinkage_type}{the type of shrinkage estimator to use. The two implemented are "non-overlapping" and "overlapping"}
+\item{shrinkage_type}{the type of shrinkage estimator to use. The two implemented are "non-overlapping" and "overlapping".}
 }
 \value{
 a DOSPortfolio class.

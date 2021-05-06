@@ -9,7 +9,7 @@ wGMVOverlapping(data, change_points, target_w, relative_loss)
 \arguments{
 \item{data}{a matrix of size (n x p), where n>p, containing, for instance, log-returns.}
 
-\item{change_points}{a vector of break points. The breakpoints are what determines
+\item{change_points}{a vector of changepoints. The changepoints are what determines
 when we recompute weights.}
 
 \item{target_w}{a vector which is the target weights that one wants to shrink to in the first period.}
@@ -17,12 +17,12 @@ when we recompute weights.}
 \item{relative_loss}{a numeric of the initial value of the relative loss for the variance of the GMV portfolio.}
 }
 \value{
-vector of portfolio weights
+a matrix of shrunk GMV portfolio weights where each row corresponds to each change point.
 }
 \description{
 This function implements the second version of the recursive estimation of the GMV portfolio in the dynamic optimal shrinkage setting.
-The difference between this function and the function \code{\link{wGMVNonOverlapping}} is that this function estimates each GMV portfolio using
-all available data. To see a more detailed description of the method, see vigenette
+The difference between this function and the function \code{\link{wGMVNonOverlapping}} is that this function estimates each
+GMV portfolio using all available data. To see a more detailed description of the method, see vignette
 \code{vignette("introduction", package = "DOSPortfolio")}.
 }
 \examples{
@@ -32,8 +32,12 @@ change_points <- c(199)
 data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 target_w <- as.vector(rep(1,p))/p
 wGMVOverlapping(data, change_points, target_w, 1)
-
+}
+\references{
+\insertAllCited{}
 }
 \seealso{
 \code{\link{wGMVNonOverlapping}}
+
+section 2.2 \insertCite{BODNAR21dynshrink}{DOSPortfolio}
 }

@@ -2,20 +2,20 @@ Package: DOSPortfolio
 Title: Dynamic Optimal Shrinkage of Portfolios
 Version: 0.0.0.9000
 Authors@R: 
-    c(person(given = "Erik",
-           family = "Thorsén",
-           role = c("aut", "cre"),
-           email = "erik.thorsen@math.su.se",
-           comment = c(ORCID = "YOUR-ORCID-ID")),
-      person(given = "Taras", 
+    c(person(given = "Taras", 
              family = "Bodnar", 
              role = "aut",
              comment = c(ORCID = "0000-0001-7855-8221")),
       person(given = "Nestor", 
              family = "Parolya", 
              role = "aut",
-             comment = c(ORCID = "0000-0003-2147-2288")))
-Description: This package contains a number of methods which construct Dynamic portfolios.
+             comment = c(ORCID = "0000-0003-2147-2288")),
+      person(given = "Erik",
+           family = "Thorsén",
+           role = c("aut", "cre"),
+           email = "erik.thorsen@math.su.se",
+           comment = c(ORCID = "...")))
+Description: This package contains a number of methods which constructs portfolios using dynamic shrinkage estimation. The estimatiors in this package are derived using results from random matrix theory and therefore rely on quite few assumptions. The main interface validates these assumptions though the individual functions do not.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

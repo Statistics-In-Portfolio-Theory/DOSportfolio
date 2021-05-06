@@ -1,12 +1,24 @@
-
-
 #' The Dynamic Optimal Shrinkage Portfolio interface.
 #'
-#' @inheritParams wGMVNonOverlapping
-#' @param shrinkage_type the type of shrinkage estimator to use. The two implemented are "non-overlapping" and "overlapping"
+#' This is the main interface to compute portfolios using the Dynamic Optimal Shrinkage estimation from
+#' \insertCite{BODNAR21dynshrink}{DOSPortfolio}. It implements two different estimators for the shrinkage
+#' coefficients, one using overlapping samples and one using non-overlapping samples.
 #'
-#' @return a DOSPortfolio class with the GMV weights and its corresponding type.
-#' @export
+#' @param data a matrix of size (n x p), where n>p, containing, for instance, log-returns.
+#' @param change_points a vector of change points. The change points are what determines when we recompute weights.
+#' @param target_w a vector which is the target weights that one wants to shrink to in the first period.
+#' @param relative_loss possibly a numeric or NULL. The initial value of the relative loss for the variance of the GMV portfolio.
+#' If its NULL, then it will be initialized with the first subsample and the function \code{\link{r0Strategy}}.
+#' @param shrinkage_type the type of shrinkage estimator to use. The two implemented are "non-overlapping" and "overlapping".
+#'
+#' @return An S3 class which contains the a matrix of the shrunk GMV portfolio weights and what type of shrinkage
+#' estimator that was used to construct the portfolios. Each row of the weight matrix corresponds to the change point
+#' and the column corresponds to the asset.
+#'
+#' @seealso Section 2.1 and 2.2 of \insertCite{BODNAR21dynshrink}{DOSPortfolio}
+#'
+#' @references
+#'  \insertAllCited{}
 #'
 #' @examples
 #' n <- 250*2
@@ -15,7 +27,7 @@
 #' change_points <- c(120, 240)
 #' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 #' weights <- DOSPortfolio(data, change_points, 1)
-#'
+#' @export
 DOSPortfolio <- function(data, change_points,
                         relative_loss=NULL,
                         target_w=OnesVec(ncol(data))/ncol(data),

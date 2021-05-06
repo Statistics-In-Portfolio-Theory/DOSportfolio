@@ -1,16 +1,19 @@
 #' The (overlapping) Global Minimum Variance (GMV) portfolio using a dynamic optimal shrinkage scheme.
 #'
 #' This function implements the second version of the recursive estimation of the GMV portfolio in the dynamic optimal shrinkage setting.
-#' The difference between this function and the function \code{\link{wGMVNonOverlapping}} is that this function estimates each GMV portfolio using
-#' all available data. To see a more detailed description of the method, see vigenette
+#' The difference between this function and the function \code{\link{wGMVNonOverlapping}} is that this function estimates each
+#' GMV portfolio using all available data. To see a more detailed description of the method, see vignette
 #' \code{vignette("introduction", package = "DOSPortfolio")}.
 #'
 #' @inheritParams wGMVNonOverlapping
 #'
 #' @seealso \code{\link{wGMVNonOverlapping}}
 #'
-#' @return vector of portfolio weights
-#' @export
+#' @return a matrix of shrunk GMV portfolio weights where each row corresponds to each change point.
+#' @seealso section 2.2 \insertCite{BODNAR21dynshrink}{DOSPortfolio}
+#'
+#' @references
+#'  \insertAllCited{}
 #'
 #' @examples
 #' n <- 200*2
@@ -19,13 +22,15 @@
 #' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 #' target_w <- as.vector(rep(1,p))/p
 #' wGMVOverlapping(data, change_points, target_w, 1)
-#'
+#' @export
 wGMVOverlapping <- function(data, change_points, target_w, relative_loss) {
   p <- ncol(data)
   # Theory assumes that c is less than one though the analytical formulas do not
   K <- 1
   c_vec <- c()
   Psi_vec <- c()
+  weights_matrix <- matrix(ncol=p, nrow=length(change_points))
+
   for (idx in 1:length(change_points)) {
     c_vec <- c(c_vec, p/change_points[idx])
     data_subsample <- data[1:change_points[idx],]
@@ -51,8 +56,9 @@ wGMVOverlapping <- function(data, change_points, target_w, relative_loss) {
       wGMV(S_chol_inv %*% t(S_chol_inv)),
       old_weights,
       psi)
+    weights_matrix[idx,] <- w_gmv_new
   }
-  w_gmv_new
+  weights_matrix
 }
 
 #' A helper function for computation of coefficients.

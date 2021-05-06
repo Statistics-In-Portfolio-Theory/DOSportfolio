@@ -26,18 +26,18 @@ library(DOSPortfolio)
 # How to use the package
 The main interface to the package is `DOSPortfolio::DOSPortfolio` which acts as a wrapper for `DOSPortfolio::wGMVOverlapping`  and `DOSPortfolio::wGMVNonOverlapping`. The big perk of using the interface is that you get input validation and more informative errors. You could use the functions directly, which would most likely not throw an error (with an exception of specific degenerate cases), though the results might not make sense. Lets simulate some data, in our simple example we assume the (log) returns are given by a t-distribution with 5 degrees of freedom.
 ```{r sims}
-n <- 250*2
-p <- 80
+n <- 25*2
+p <- 5
 data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 ```
-Notice that it is a matrix on _long_ format. Each column is assumed to be the time series of an asset. _We assume that the returns are ordered in time_. The observation on the first row was observed before the observations on the second and so forth. To construct the DOS portfolio we need to specify the number of _change points_ and when these happen. Since `data` is a matrix, we simple work with the row index. We construct the DOS portfolio as
+Notice that it is a matrix on _long_ format. Each column is assumed to be the time series of an asset. _We assume that the returns are ordered in time_. The observation on the first row was observed before the observations on the second and so forth. To construct the DOS portfolio we need to specify the number of _change points_ and when these happen. Since `data` is a matrix on long format, we work with the row index. The DOS portfolio is then constructed as
 ```{r dosportfolio}
-change_points <- c(199, 199 + 90)
+change_points <- c(25, 40)
 # use the first subsample to estimate the relative loss
-portfolio <- DOSPortfolio(data, change_points)
+(portfolios <- DOSPortfolio(data, change_points))
 ```
 
-The first parameter we will configure the number of change points. In this case we reweight our portfolio on the 199th observation and 90 observations after that.
+The first parameter we configure is the number of change points and when they happen. These are specified in the `change_points` vector. These specify when you recompute the weights. In this case we re-weight our portfolio on the 25th observation and 40th observation. Notice that there we do not include the last 10 observations, there are only 2 change points as these are what is specified. If you wanted to include a third change point.
 
 which compute Global Mimimum Variance portfolios in a dynamic optimal shrinkage scheme. Both  S3 class for the 
 The portfolio is computed using a convex combination. On the first transition, given by the first element of break points,
@@ -47,13 +47,6 @@ using the most recent data, e.g. from the last break point to the current. The d
 is therefore is not overlapping.
 
 ## Use together with tsibble and the tidyverse
-
-## A note on efficiency
-The implementation of this package is not efficient in quite separate regards. The first is the most major issue, we always return the most recent portfolio weights while we always need to compute the whole sequence of portfolio weights. This implies that if you were to run 
-```{r eff_1}
-#break, relative_loss
-
-```
 
 
 The portfolio 
