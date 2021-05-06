@@ -4,17 +4,17 @@
 \alias{wGMVNonOverlapping}
 \title{The (non overlapping) Global Minimum Variance (GMV) portfolio using a dynamic optimal shrinkage scheme.}
 \usage{
-wGMVNonOverlapping(data, break_points, target_w, r)
+wGMVNonOverlapping(data, change_points, target_w, relative_loss)
 }
 \arguments{
 \item{data}{a matrix of size (n x p), where n>p, containing, for instance, log-returns.}
 
-\item{break_points}{a vector of break points. The breakpoints are what determines
+\item{change_points}{a vector of break points. The breakpoints are what determines
 when we recompute weights.}
 
 \item{target_w}{a vector which is the target weights that one wants to shrink to in the first period.}
 
-\item{r}{a numeric of the initial value of the relative loss for the variance of the GMV portfolio.}
+\item{relative_loss}{a numeric of the initial value of the relative loss for the variance of the GMV portfolio.}
 }
 \value{
 vector of shrunk GMV portfolio weights
@@ -24,15 +24,14 @@ This function implements the recursive estimation of the GMV portfolio in the dy
 The method demands that the data is on long format, observations are on rows and covariates are columns and that
 the number of rows are greater than the number of columns. This function estimates each GMV portfolio
 using the most recent data, e.g. from the last break point to the current. To see a more detailed description of the method, see
-vigenette \code{vignette("DOSPortfolio", package = "DOSPortfolio")}.
+vignette \code{vignette("introduction", package = "DOSPortfolio")}.
 }
 \examples{
 n <- 200*2
 p <- 80
-c <- p/n
-break_points <- c(199)
+change_point <- c(199)
 data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 target_w <- as.vector(rep(1,p))/p
-wGMVNonOverlapping(data, break_points, target_w, 1)
+wGMVNonOverlapping(data, change_point, target_w, 1)
 
 }

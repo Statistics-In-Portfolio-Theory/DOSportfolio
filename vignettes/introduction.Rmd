@@ -16,19 +16,51 @@ knitr::opts_chunk$set(
 ```
 
 This package is a collection of the methods developed in [references]()...
+It concerns one case which is central to managing portfolios, how to transition from one portfolio to a new one optimally.
 
-To install the package you need to run `devtools::install_github("Statistics-In-Portfolio-Theory/DOSportfolio")`, which demands that you have installed `devtools`. To load the package, run
+To install the package you need to run `devtools::install_github("Statistics-In-Portfolio-Theory/DOSPortfolio")`, which demands that you have installed `devtools`. To load the package, run
 ```{r setup}
-library(DOSPorfolio)
+library(DOSPortfolio)
 ```
 
-The two main functions are `DOSPortfolio::wGMVOverlapping` and `DOSPortfolio::wGMVNonOverlapping` which compute Global Mimimum Variance portfolios in a dynamic optimal shrinkage scheme. Both  S3 class for the 
+# How to use the package
+The main interface to the package is `DOSPortfolio::DOSPortfolio` which acts as a wrapper for `DOSPortfolio::wGMVOverlapping`  and `DOSPortfolio::wGMVNonOverlapping`. The big perk of using the interface is that you get input validation and more informative errors. You could use the functions directly, which would most likely not throw an error (with an exception of specific degenerate cases), though the results might not make sense. Lets simulate some data, in our simple example we assume the (log) returns are given by a t-distribution with 5 degrees of freedom.
+```{r sims}
+n <- 250*2
+p <- 80
+data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
+```
+Notice that it is a matrix on _long_ format. Each column is assumed to be the time series of an asset. _We assume that the returns are ordered in time_. The observation on the first row was observed before the observations on the second and so forth. To construct the DOS portfolio we need to specify the number of _change points_ and when these happen. Since `data` is a matrix, we simple work with the row index. We construct the DOS portfolio as
+```{r dosportfolio}
+change_points <- c(199, 199 + 90)
+# use the first subsample to estimate the relative loss
+portfolio <- DOSPortfolio(data, change_points)
+```
+
+The first parameter we will configure the number of change points. In this case we reweight our portfolio on the 199th observation and 90 observations after that.
+
+which compute Global Mimimum Variance portfolios in a dynamic optimal shrinkage scheme. Both  S3 class for the 
 The portfolio is computed using a convex combination. On the first transition, given by the first element of break points,
 the function shrinks towards the target weights. On the second transition (if there exists one) we shrink towards the previous
 estimate of the GMV portfolio where each weight is based of non-overlapping samples. This function estimates each GMV portfolio
 using the most recent data, e.g. from the last break point to the current. The data used for the estimation of the portfolio weights
 is therefore is not overlapping.
 
+## Use together with tsibble and the tidyverse
+
+## A note on efficiency
+The implementation of this package is not efficient in quite separate regards. The first is the most major issue, we always return the most recent portfolio weights while we always need to compute the whole sequence of portfolio weights. This implies that if you were to run 
+```{r eff_1}
+#break, relative_loss
+
+```
+
+
+The portfolio 
+
+# Suggestion, use tsibble and tidyverse! 
+
+# Closing remarks
 
 # References
 

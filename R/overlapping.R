@@ -1,15 +1,13 @@
 #' The (overlapping) Global Minimum Variance (GMV) portfolio using a dynamic optimal shrinkage scheme.
 #'
 #' This function implements the second version of the recursive estimation of the GMV portfolio in the dynamic optimal shrinkage setting.
-#' The difference between this function and the function \code{wGMVNonOverlapping(...)} is that this function estimates each GMV portfolio using
+#' The difference between this function and the function \code{\link{wGMVNonOverlapping}} is that this function estimates each GMV portfolio using
 #' all available data. To see a more detailed description of the method, see vigenette
-#' \code{vignette("DOSPortfolio", package = "DOSPortfolio")}.
+#' \code{vignette("introduction", package = "DOSPortfolio")}.
 #'
-#' @param data a matrix of size (n x p), where n>p, containing, for instance, log-returns.
-#' @param break_points a vector of break points. The breakpoints are what determines
-#' when we recompute weights.
-#' @param target_w a vector which is the target weights that one wants to shrink to in the first period.
-#' @param R a numeric of the initial value of the relative loss for the variance of the GMV portfolio.
+#' @inheritParams wGMVNonOverlapping
+#'
+#' @seealso \code{\link{wGMVNonOverlapping}}
 #'
 #' @return vector of portfolio weights
 #' @export
@@ -17,21 +15,20 @@
 #' @examples
 #' n <- 200*2
 #' p <- 80
-#' c <- p/n
-#' break_points <- c(199)
+#' change_points <- c(199)
 #' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 #' target_w <- as.vector(rep(1,p))/p
-#' wGMVOverlapping(data, break_points, target_w, 1)
+#' wGMVOverlapping(data, change_points, target_w, 1)
 #'
-wGMVOverlapping <- function(data, break_points, target_w, R) {
+wGMVOverlapping <- function(data, change_points, target_w, relative_loss) {
   p <- ncol(data)
   # Theory assumes that c is less than one though the analytical formulas do not
   K <- 1
   c_vec <- c()
   Psi_vec <- c()
-  for (idx in 1:length(break_points)) {
-    c_vec <- c(c_vec, p/break_points[idx])
-    data_subsample <- data[1:break_points[idx],]
+  for (idx in 1:length(change_points)) {
+    c_vec <- c(c_vec, p/change_points[idx])
+    data_subsample <- data[1:change_points[idx],]
     S <- stats::var(data_subsample)
     S_chol_inv <- t(solve(chol(S)))
     if (idx == 1) {
@@ -44,19 +41,18 @@ wGMVOverlapping <- function(data, break_points, target_w, R) {
       }
       K <-  ComputeBeta(0, idx-1, Psi_vec) + sum(tmp)
     }
-    psi <- ((R +1) - K) / (
-      (R +1) + 1/(1-c_vec[idx]) - 2*K
+    psi <- ((relative_loss +1) - K) / (
+      (relative_loss +1) + 1/(1-c_vec[idx]) - 2*K
     )
     Psi_vec <- c(Psi_vec, psi)
-    R <- rUpdateOverlapping(psi, c_vec[idx], R, K)
-    # Compute the GMV portfolio according to the current subsample.
-    # Use chol decomp since its supposed to invert faster.
+    # Update the relative loss according to formula
+    relative_loss <- psi^2 * c_vec[idx]/(1-c_vec[idx]) + (1-psi)^2*relative_loss + 2*psi*(1-psi)*(K-1)
     w_gmv_new <- ConvexCombination(
       wGMV(S_chol_inv %*% t(S_chol_inv)),
       old_weights,
       psi)
   }
-  structure(w_gmv_new, class="DOSPortfolio")
+  w_gmv_new
 }
 
 #' A helper function for computation of coefficients.
