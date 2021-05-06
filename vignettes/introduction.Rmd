@@ -1,0 +1,35 @@
+---
+title: "An introduction to the Dynamic Optimal Shrinkage Portfolio package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteIndKexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This package is a collection of the methods developed in [references]()...
+
+To install the package you need to run `devtools::install_github("Statistics-In-Portfolio-Theory/DOSportfolio")`, which demands that you have installed `devtools`. To load the package, run
+```{r setup}
+library(DOSPorfolio)
+```
+
+The two main functions are `DOSPortfolio::wGMVOverlapping` and `DOSPortfolio::wGMVNonOverlapping` which compute Global Mimimum Variance portfolios in a dynamic optimal shrinkage scheme. Both  S3 class for the 
+The portfolio is computed using a convex combination. On the first transition, given by the first element of break points,
+the function shrinks towards the target weights. On the second transition (if there exists one) we shrink towards the previous
+estimate of the GMV portfolio where each weight is based of non-overlapping samples. This function estimates each GMV portfolio
+using the most recent data, e.g. from the last break point to the current. The data used for the estimation of the portfolio weights
+is therefore is not overlapping.
+
+
+# References
+
+ 1. ...
