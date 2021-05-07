@@ -8,7 +8,7 @@ DOSPortfolio(
   data,
   change_points,
   relative_loss = NULL,
-  target_w = OnesVec(ncol(data))/ncol(data),
+  target_portfolio = OnesVec(ncol(data))/ncol(data),
   shrinkage_type = "non-overlapping"
 )
 }
@@ -20,7 +20,7 @@ DOSPortfolio(
 \item{relative_loss}{possibly a numeric or NULL. The initial value of the relative loss for the variance of the GMV portfolio.
 If its NULL, then it will be initialized with the first subsample and the function \code{\link{r0Strategy}}.}
 
-\item{target_w}{a vector which is the target weights that one wants to shrink to in the first period.}
+\item{target_portfolio}{a vector which is the target weights that one wants to shrink to in the first period.}
 
 \item{shrinkage_type}{the type of shrinkage estimator to use. The two implemented are "non-overlapping" and "overlapping".}
 }

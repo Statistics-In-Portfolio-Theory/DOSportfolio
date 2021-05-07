@@ -6,14 +6,14 @@
 simple plugin estimator for the relative loss to the variance of the GMV portfolio
 and the target portfolio.}
 \usage{
-r0Strategy(S_inv, S, target_w, c)
+r0Strategy(S_inv, S, target_portfolio, c)
 }
 \arguments{
 \item{S_inv}{the inverse of a sample covariance matrix.}
 
 \item{S}{a sample covariance matrix.}
 
-\item{target_w}{a vector representing a target portfolio which is shrunk to.}
+\item{target_portfolio}{a vector representing a target portfolio which is shrunk to.}
 
 \item{c}{a numeric which is the concentration ratio.}
 }

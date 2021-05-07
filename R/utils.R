@@ -37,11 +37,11 @@ ConvexCombination <- function(x1, x2, lambda) {
 #'
 #' @param S_inv the inverse of a sample covariance matrix.
 #' @param S a sample covariance matrix.
-#' @param target_w a vector representing a target portfolio which is shrunk to.
+#' @param target_portfolio a vector representing a target portfolio which is shrunk to.
 #' @param c a numeric which is the concentration ratio.
 #'
 #' @return vector
 #' @export
-r0Strategy <- function(S_inv, S, target_w, c){
-  (1-c)*as.numeric(t(OnesVec(nrow(S_inv))) %*% S_inv %*% OnesVec(nrow(S_inv)))*as.numeric(t(target_w) %*% S %*% target_w)-1
+r0Strategy <- function(S_inv, S, target_portfolio, c){
+  (1-c)*as.numeric(t(OnesVec(nrow(S_inv))) %*% S_inv %*% OnesVec(nrow(S_inv)))*as.numeric(t(target_portfolio) %*% S %*% target_portfolio)-1
 }

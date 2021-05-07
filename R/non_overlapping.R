@@ -8,7 +8,7 @@
 #' @param data a matrix of size (n x p), where n>p, containing, for instance, log-returns.
 #' @param change_points a vector of changepoints. The changepoints are what determines
 #' when we recompute weights.
-#' @param target_w a vector which is the target weights that one wants to shrink to in the first period.
+#' @param target_portfolio a vector which is the target weights that one wants to shrink to in the first period.
 #' @param relative_loss a numeric of the initial value of the relative loss for the variance of the GMV portfolio.
 #'
 #' @return a matrix of shrunk GMV portfolio weights where each row corresponds to each change point.
@@ -22,10 +22,10 @@
 #' p <- 80
 #' change_point <- c(199)
 #' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
-#' target_w <- as.vector(rep(1,p))/p
-#' wGMVNonOverlapping(data, change_point, target_w, 1)
+#' target_portfolio <- as.vector(rep(1,p))/p
+#' wGMVNonOverlapping(data, change_point, target_portfolio, 1)
 #' @export
-wGMVNonOverlapping <- function(data, change_points, target_w, relative_loss) {
+wGMVNonOverlapping <- function(data, change_points, target_portfolio, relative_loss) {
   p <- ncol(data)
   weights_matrix <- matrix(ncol=p, nrow=length(change_points))
   if (!((change_points[1] == 1) && (length(change_points) > 2))) {
@@ -37,7 +37,7 @@ wGMVNonOverlapping <- function(data, change_points, target_w, relative_loss) {
     S <- stats::var(data_subsample)
     S_chol_inv <- t(solve(chol(S)))
     if (idx - 1 == 1) {
-      old_weights <- target_w
+      old_weights <- target_portfolio
     }else{
       # use the new info to estimate r recursively
       relative_loss <- xi^2 * c / (1 - c) + (1 - xi)^2 * relative_loss

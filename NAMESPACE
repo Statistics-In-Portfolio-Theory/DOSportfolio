@@ -2,6 +2,7 @@
 
 export(DOSPortfolio)
 export(OnesVec)
+export(generate_sigma)
 export(r0Strategy)
 export(wGMVNonOverlapping)
 export(wGMVOverlapping)

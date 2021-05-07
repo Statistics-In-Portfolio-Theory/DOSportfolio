@@ -4,14 +4,20 @@
 \alias{new_DOSPortfolio}
 \title{Constructor for the DOSPortfolio class.}
 \usage{
-new_DOSPortfolio(data, change_points, target_w, relative_loss, shrinkage_type)
+new_DOSPortfolio(
+  data,
+  change_points,
+  target_portfolio,
+  relative_loss,
+  shrinkage_type
+)
 }
 \arguments{
 \item{data}{a matrix of size (n x p), where n>p, containing, for instance, log-returns.}
 
 \item{change_points}{a vector of change points. The change points are what determines when we recompute weights.}
 
-\item{target_w}{a vector which is the target weights that one wants to shrink to in the first period.}
+\item{target_portfolio}{a vector which is the target weights that one wants to shrink to in the first period.}
 
 \item{relative_loss}{possibly a numeric or NULL. The initial value of the relative loss for the variance of the GMV portfolio.
 If its NULL, then it will be initialized with the first subsample and the function \code{\link{r0Strategy}}.}

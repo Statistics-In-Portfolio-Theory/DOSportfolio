@@ -20,10 +20,10 @@
 #' p <- 80
 #' change_points <- c(199)
 #' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
-#' target_w <- as.vector(rep(1,p))/p
-#' wGMVOverlapping(data, change_points, target_w, 1)
+#' target_portfolio <- as.vector(rep(1,p))/p
+#' wGMVOverlapping(data, change_points, target_portfolio, 1)
 #' @export
-wGMVOverlapping <- function(data, change_points, target_w, relative_loss) {
+wGMVOverlapping <- function(data, change_points, target_portfolio, relative_loss) {
   p <- ncol(data)
   # Theory assumes that c is less than one though the analytical formulas do not
   K <- 1
@@ -37,7 +37,7 @@ wGMVOverlapping <- function(data, change_points, target_w, relative_loss) {
     S <- stats::var(data_subsample)
     S_chol_inv <- t(solve(chol(S)))
     if (idx == 1) {
-      old_weights <- target_w
+      old_weights <- target_portfolio
     }else{
       old_weights <- w_gmv_new
       tmp <- c()

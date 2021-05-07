@@ -1,6 +1,7 @@
 ---
 title: "An introduction to the Dynamic Optimal Shrinkage Portfolio package"
 output: rmarkdown::html_vignette
+bibliography: ../inst/REFERENCES.bib
 vignette: >
   %\VignetteIndexEntry{introduction}
   %\VignetteIndKexEntry{introduction}
@@ -15,46 +16,73 @@ knitr::opts_chunk$set(
 )
 ```
 
-This package is a collection of the methods developed in [references]()...
-It concerns one case which is central to managing portfolios, how to transition from one portfolio to a new one optimally.
+This package is a collection of the methods developed in [@BODNAR21dynshrink]. It constructs sequences of estimated Global Mimimum Variance (GMV) portfolios. The concept of a portfolio is most often used in finance as a way to invest in financial assets (e.g. stocks), which is the applications we will have in mind. There are other applications of these types of estimators, such as signal processing. The simplest example of a portfolio is the equally weighted (EW) portfolio which says that you should invest equal amount in every assets. If you have $p$ assets, then each asset gets $1/p$ of your money. 
+
+# How to use the package
 
 To install the package you need to run `devtools::install_github("Statistics-In-Portfolio-Theory/DOSPortfolio")`, which demands that you have installed `devtools`. To load the package, run
 ```{r setup}
 library(DOSPortfolio)
 ```
 
-# How to use the package
 The main interface to the package is `DOSPortfolio::DOSPortfolio` which acts as a wrapper for `DOSPortfolio::wGMVOverlapping`  and `DOSPortfolio::wGMVNonOverlapping`. The big perk of using the interface is that you get input validation and more informative errors. You could use the functions directly, which would most likely not throw an error (with an exception of specific degenerate cases), though the results might not make sense. Lets simulate some data, in our simple example we assume the (log) returns are given by a t-distribution with 5 degrees of freedom.
 ```{r sims}
 n <- 25*2
-p <- 5
-data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
+p <- 15
+# generate a covariance matrix
+Sigma <- generate_sigma(p)
+data <- matrix(rt(n*p, df=5), ncol=p, nrow=n) %*% t(chol(Sigma))
 ```
 Notice that it is a matrix on _long_ format. Each column is assumed to be the time series of an asset. _We assume that the returns are ordered in time_. The observation on the first row was observed before the observations on the second and so forth. To construct the DOS portfolio we need to specify the number of _change points_ and when these happen. Since `data` is a matrix on long format, we work with the row index. The DOS portfolio is then constructed as
 ```{r dosportfolio}
-change_points <- c(25, 40)
+change_points <- c(25, 42)
 # use the first subsample to estimate the relative loss
 (portfolios <- DOSPortfolio(data, change_points))
 ```
+The first parameter we configure is the number of change points and when they happen. These are specified in the `change_points` vector and specify when you recompute the weights. In this case we re-weight our portfolio on the `r change_points[1]`th observation and `r change_points[2]`th observation. Notice that there we do not include the last 10 observations. There are only 2 change points and these do not include the last observed value. If you wanted to include a third change point, just add the number of rows (or `r nrow(data)` in this case) to the `change_points` vector. However, as we will see later on, this will not work in our example though there is a simple workaround.
 
-The first parameter we configure is the number of change points and when they happen. These are specified in the `change_points` vector. These specify when you recompute the weights. In this case we re-weight our portfolio on the 25th observation and 40th observation. Notice that there we do not include the last 10 observations, there are only 2 change points as these are what is specified. If you wanted to include a third change point.
+Each row of `portfolios$weights` is a shrunk GMV portfolio. For each change point the portfolio is computed using a convex combination using the previously estimated portfolio and on the first transition, the target portfolio. This is the "transition" which is made optimally and is specifically tailored to work in higher dimensions, when the number of assets is very large and possible close to the number of observations.
 
-which compute Global Mimimum Variance portfolios in a dynamic optimal shrinkage scheme. Both  S3 class for the 
-The portfolio is computed using a convex combination. On the first transition, given by the first element of break points,
-the function shrinks towards the target weights. On the second transition (if there exists one) we shrink towards the previous
-estimate of the GMV portfolio where each weight is based of non-overlapping samples. This function estimates each GMV portfolio
-using the most recent data, e.g. from the last break point to the current. The data used for the estimation of the portfolio weights
-is therefore is not overlapping.
+The string seen in `portfolios$shrinkage_type` is what type of shrinkage estimator we used to make the transitions. There are two options, `"non-overlapping"` and `"overlapping"`. These can handle quite different scenarios which we can illustrate by extending the `change_points` vector to
+```{r }
+change_points <- c(25, 42, 50)
+# This will not work
+try(portfolios <- DOSPortfolio(data, change_points))
+```
+However, this will work
+```{r}
+(portfolios <- DOSPortfolio(data, change_points, shrinkage_type = "overlapping"))
+```
+The issue concerns what is called the "concentration ratio" which we denote $c_i=p/n_i$, where $n_i$ is the size of each subsample. In our case these are `r diff(c(0,change_points))`. When the methods are derived for the "non-overlapping" shrinkage estimator it is assumed that $c_i \in (0,1)$. For the "non-overlapping" estimator we do not need to make such a rigid assumption, we only need that the first value $c_1 \in (0,1)$ and the rest can be $p>n_j$ for $j=2,...,T$. 
 
-## Use together with tsibble and the tidyverse
+The last two parameters that are available to configure is the target portfolio, which we will denote $\mathbf{b}$, and an intial seed/estimate for the relative loss parameter. The target portfolio can be any portfolio whose values sums to one. The default value is the EW portfolio previously mentioned but it can be any other portfolio of your choice. 
+```{r}
+new_target <- runif(p, -1, 1)
+new_target<- new_target/sum(new_target)
+(portfolios <- DOSPortfolio(data, change_points, shrinkage_type = "overlapping", target_portfolio = new_target))
+```
 
+The initial estimate for the relative loss parameter demands some more detail. The `relative_loss` refers to how the following quantity
+$$
+r_0 = \mathbf{1}'\boldsymbol{\Sigma}^{-1}\mathbf{1} \mathbf{b}'\boldsymbol{\Sigma}\mathbf{b} -1
+$$
+which is how the variance of our target portfolio $\mathbf{b}'\boldsymbol{\Sigma}\mathbf{b}$ relates to the variance of the GMV portfolio $1/\mathbf{1}'\boldsymbol{\Sigma}^{-1}\mathbf{1}$. A value of $0$ would indicate that we know the variance of the portfolio and it is the target portfolio. The argument is equal to `NULL` per default which implies that we use a simple estimate of the quantity. We use the sample covariance matrix $\mathbf{S}$ from _the first subsample_ to estimate $\boldsymbol{\Sigma}$ and its consistent inverse estimate $(1-c)\mathbf{S}^{-1}$. The factor $1-c$ comes from the fact that the inverse sample covariance matrix is biased when $p$ is allowed to grow together with $n$, that is when $p\rightarrow \infty$ s.t. $n>p$. We can use any other estimate, though we _need to make sure that the estimate is consistent_, e.g. the estimate $\hat{r}_0$ converges to $r_0$ in probability.
 
-The portfolio 
+## A note on the assumptions made in DOSPortfolio
+The statistical model we make use of to derive the methods is
+$$
+\mathbf{Y}_{n_i} = \mathbf{1}\boldsymbol{\mu}' + \mathbf{X}_{n_i} \boldsymbol{\Sigma}^{1/2} 
+$$
+where $i=1,2,...,T$ is the number of change points in the model. A change point is just when we will reweight the portfolio, that is transition from one existing portfolio to another. Note that we can only observe $\mathbf{Y}_i$ but when constructing GMV portfolios we are interested in estimating $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$. We make the following assumptions
 
-# Suggestion, use tsibble and tidyverse! 
+1. The elements of $\mathbf{X}_i$ has finite fourth moment.
+2. $t_i$ and $T$ are known (nonrandom). 
+3. For a target portfolio $\mathbf{b}$ the quantity $\mathbf{b}' \boldsymbol{\Sigma}\mathbf{b}$ is bounded when $p \rightarrow \infty$.
 
-# Closing remarks
+The first assumption is standard to make in finance but enforce the end-user to verify that its true.  
+The second assumption implies that we do not tell you when you should reweight a portfolio, we simply say that they are given. Although this assumption has little practical relevance, it is an assumption that is more philosophical and hard to test.
+The third assumption is also somewhat philosophical. The target portfolio is chosen by the end-user though we need to have that the quantity $\mathbf{b}' \boldsymbol{\Sigma}\mathbf{b}$ to be finite for out methods to make sense. This makes some assumptions on the relation between the true covariance matrix $\boldsymbol{\Sigma}$ and how it relates to $\mathbf{b}$. This is a formal assumption though important. 
+
+The sequences of portfolios are constructed to make as smooth transitions as possible from one portfolio to another. The transitions are made to be "optimal" when you have many assets $p$ in comparison to observations $n$, which is usually characterized by the concentration ratio $c=p/n \in (0,1)$. When $c$ is close to 1 we have very little data in comparison to how many parameters we need to estimate. Note that we do not cover $c>1$, though our aim is to do so in the future.
 
 # References
-
- 1. ...

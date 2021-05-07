@@ -4,14 +4,20 @@
 \alias{validate_input}
 \title{Validates input to the DOSPortfolio function.}
 \usage{
-validate_input(data, change_points, target_w, relative_loss, shrinkage_type)
+validate_input(
+  data,
+  change_points,
+  target_portfolio,
+  relative_loss,
+  shrinkage_type
+)
 }
 \arguments{
 \item{data}{the data to validated, should be on long format.}
 
 \item{change_points}{a vector of break points.}
 
-\item{target_w}{the target vector at time point 0.}
+\item{target_portfolio}{the target vector at time point 0.}
 
 \item{relative_loss}{the relative loss towards the GMV portfolios variance.}
 
