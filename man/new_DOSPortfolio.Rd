@@ -6,7 +6,7 @@
 \usage{
 new_DOSPortfolio(
   data,
-  change_points,
+  reallocation_points,
   target_portfolio,
   relative_loss,
   shrinkage_type
@@ -15,7 +15,7 @@ new_DOSPortfolio(
 \arguments{
 \item{data}{a matrix of size (n x p), where n>p, containing, for instance, log-returns.}
 
-\item{change_points}{a vector of change points. The change points are what determines when we recompute weights.}
+\item{reallocation_points}{a vector of change points. The change points are what determines when we recompute weights.}
 
 \item{target_portfolio}{a vector which is the target weights that one wants to shrink to in the first period.}
 

@@ -6,7 +6,7 @@
 \usage{
 validate_input(
   data,
-  change_points,
+  reallocation_points,
   target_portfolio,
   relative_loss,
   shrinkage_type
@@ -15,7 +15,7 @@ validate_input(
 \arguments{
 \item{data}{the data to validated, should be on long format.}
 
-\item{change_points}{a vector of break points.}
+\item{reallocation_points}{a vector of break points.}
 
 \item{target_portfolio}{the target vector at time point 0.}
 

@@ -9,7 +9,7 @@
 #'
 #' @seealso \code{\link{wGMVNonOverlapping}}
 #'
-#' @return a matrix of shrunk GMV portfolio weights where each row corresponds to each change point.
+#' @return a matrix of shrunk GMV portfolio weights where each row corresponds to each reallocation point.
 #' @seealso section 2.2 \insertCite{BODNAR21dynshrink}{DOSPortfolio}
 #'
 #' @references
@@ -18,22 +18,22 @@
 #' @examples
 #' n <- 200*2
 #' p <- 80
-#' change_points <- c(199)
+#' reallocation_points <- c(199)
 #' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 #' target_portfolio <- as.vector(rep(1,p))/p
-#' wGMVOverlapping(data, change_points, target_portfolio, 1)
+#' wGMVOverlapping(data, reallocation_points, target_portfolio, 1)
 #' @export
-wGMVOverlapping <- function(data, change_points, target_portfolio, relative_loss) {
+wGMVOverlapping <- function(data, reallocation_points, target_portfolio, relative_loss) {
   p <- ncol(data)
   # Theory assumes that c is less than one though the analytical formulas do not
   K <- 1
   c_vec <- c()
   Psi_vec <- c()
-  weights_matrix <- matrix(ncol=p, nrow=length(change_points))
+  weights_matrix <- matrix(ncol=p, nrow=length(reallocation_points))
 
-  for (idx in 1:length(change_points)) {
-    c_vec <- c(c_vec, p/change_points[idx])
-    data_subsample <- data[1:change_points[idx],]
+  for (idx in 1:length(reallocation_points)) {
+    c_vec <- c(c_vec, p/reallocation_points[idx])
+    data_subsample <- data[1:reallocation_points[idx],]
     S <- stats::var(data_subsample)
     S_chol_inv <- t(solve(chol(S)))
     if (idx == 1) {

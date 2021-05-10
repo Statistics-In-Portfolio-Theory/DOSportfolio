@@ -33,33 +33,33 @@ p <- 15
 Sigma <- generate_sigma(p)
 data <- matrix(rt(n*p, df=5), ncol=p, nrow=n) %*% t(chol(Sigma))
 ```
-Notice that it is a matrix on _long_ format. Each column is assumed to be the time series of an asset. _We assume that the returns are ordered in time_. The observation on the first row was observed before the observations on the second and so forth. To construct the DOS portfolio we need to specify the number of _change points_ and when these happen. Since `data` is a matrix on long format, we work with the row index. The DOS portfolio is then constructed as
+Notice that it is a matrix on _long_ format. Each column is assumed to be the time series of an asset. _We assume that the returns are ordered in time_. The observation on the first row was observed before the observations on the second and so forth. To construct the DOS portfolio we need to specify the number of _reallocation points_ and when these happen. Since `data` is a matrix on long format, we work with the row index. The DOS portfolio is then constructed as
 ```{r dosportfolio}
-change_points <- c(25, 42)
+reallocation_points <- c(25, 42)
 # use the first subsample to estimate the relative loss
-(portfolios <- DOSPortfolio(data, change_points))
+(portfolios <- DOSPortfolio(data, reallocation_points))
 ```
-The first parameter we configure is the number of change points and when they happen. These are specified in the `change_points` vector and specify when you recompute the weights. In this case we re-weight our portfolio on the `r change_points[1]`th observation and `r change_points[2]`th observation. Notice that there we do not include the last 10 observations. There are only 2 change points and these do not include the last observed value. If you wanted to include a third change point, just add the number of rows (or `r nrow(data)` in this case) to the `change_points` vector. However, as we will see later on, this will not work in our example though there is a simple workaround.
+The first parameter we configure is the number of reallocation points and when they happen. These are specified in the `reallocation_points` vector and specify when you recompute the weights. In this case we re-weight our portfolio on the `r reallocation_points[1]`th observation and `r reallocation_points[2]`th observation. Notice that there we do not include the last 10 observations. There are only 2 reallocation points and these do not include the last observed value. If you wanted to include a third reallocation point, just add the number of rows (or `r nrow(data)` in this case) to the `reallocation_points` vector. However, as we will see later on, this will not work in our example though there is a simple workaround.
 
-Each row of `portfolios$weights` is a shrunk GMV portfolio. For each change point the portfolio is computed using a convex combination using the previously estimated portfolio and on the first transition, the target portfolio. This is the "transition" which is made optimally and is specifically tailored to work in higher dimensions, when the number of assets is very large and possible close to the number of observations.
+Each row of `portfolios$weights` is a shrunk GMV portfolio. For each reallocation point the portfolio is computed using a convex combination using the previously estimated portfolio and on the first transition, the target portfolio. This is the "transition" which is made optimally and is specifically tailored to work in higher dimensions, when the number of assets is very large and possible close to the number of observations.
 
-The string seen in `portfolios$shrinkage_type` is what type of shrinkage estimator we used to make the transitions. There are two options, `"non-overlapping"` and `"overlapping"`. These can handle quite different scenarios which we can illustrate by extending the `change_points` vector to
+The string seen in `portfolios$shrinkage_type` is what type of shrinkage estimator we used to make the transitions. There are two options, `"non-overlapping"` and `"overlapping"`. These can handle quite different scenarios which we can illustrate by extending the `reallocation_points` vector to
 ```{r }
-change_points <- c(25, 42, 50)
+reallocation_points <- c(25, 42, 50)
 # This will not work
-try(portfolios <- DOSPortfolio(data, change_points))
+try(portfolios <- DOSPortfolio(data, reallocation_points))
 ```
 However, this will work
 ```{r}
-(portfolios <- DOSPortfolio(data, change_points, shrinkage_type = "overlapping"))
+(portfolios <- DOSPortfolio(data, reallocation_points, shrinkage_type = "overlapping"))
 ```
-The issue concerns what is called the "concentration ratio" which we denote $c_i=p/n_i$, where $n_i$ is the size of each subsample. In our case these are `r diff(c(0,change_points))`. When the methods are derived for the "non-overlapping" shrinkage estimator it is assumed that $c_i \in (0,1)$. For the "non-overlapping" estimator we do not need to make such a rigid assumption, we only need that the first value $c_1 \in (0,1)$ and the rest can be $p>n_j$ for $j=2,...,T$. 
+The issue concerns what is called the "concentration ratio" which we denote $c_i=p/n_i$, where $n_i$ is the size of each subsample. In our case these are `r diff(c(0,reallocation_points))`. When the methods are derived for the "non-overlapping" shrinkage estimator it is assumed that $c_i \in (0,1)$. For the "non-overlapping" estimator we do not need to make such a rigid assumption, we only need that the first value $c_1 \in (0,1)$ and the rest can be $p>n_j$ for $j=2,...,T$. 
 
 The last two parameters that are available to configure is the target portfolio, which we will denote $\mathbf{b}$, and an intial seed/estimate for the relative loss parameter. The target portfolio can be any portfolio whose values sums to one. The default value is the EW portfolio previously mentioned but it can be any other portfolio of your choice. 
 ```{r}
 new_target <- runif(p, -1, 1)
 new_target<- new_target/sum(new_target)
-(portfolios <- DOSPortfolio(data, change_points, shrinkage_type = "overlapping", target_portfolio = new_target))
+(portfolios <- DOSPortfolio(data, reallocation_points, shrinkage_type = "overlapping", target_portfolio = new_target))
 ```
 
 The initial estimate for the relative loss parameter demands some more detail. The `relative_loss` refers to how the following quantity
@@ -73,7 +73,7 @@ The statistical model we make use of to derive the methods is
 $$
 \mathbf{Y}_{n_i} = \mathbf{1}\boldsymbol{\mu}' + \mathbf{X}_{n_i} \boldsymbol{\Sigma}^{1/2} 
 $$
-where $i=1,2,...,T$ is the number of change points in the model. A change point is just when we will reweight the portfolio, that is transition from one existing portfolio to another. Note that we can only observe $\mathbf{Y}_i$ but when constructing GMV portfolios we are interested in estimating $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$. We make the following assumptions
+where $i=1,2,...,T$ is the number of reallocation points in the model. A reallocation point is just when we will reweight the portfolio, that is transition from one existing portfolio to another. Note that we can only observe $\mathbf{Y}_i$ but when constructing GMV portfolios we are interested in estimating $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$. We make the following assumptions
 
 1. The elements of $\mathbf{X}_i$ has finite fourth moment.
 2. $t_i$ and $T$ are known (nonrandom). 

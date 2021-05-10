@@ -4,12 +4,12 @@
 \alias{wGMVOverlapping}
 \title{The (overlapping) Global Minimum Variance (GMV) portfolio using a dynamic optimal shrinkage scheme.}
 \usage{
-wGMVOverlapping(data, change_points, target_portfolio, relative_loss)
+wGMVOverlapping(data, reallocation_points, target_portfolio, relative_loss)
 }
 \arguments{
-\item{data}{a matrix of size (n x p), where n>p, containing, for instance, log-returns.}
+\item{data}{a matrix of size (n x p), where n>p, containing a sample of p-dimensional vectors of asset returns.}
 
-\item{change_points}{a vector of changepoints. The changepoints are what determines
+\item{reallocation_points}{a vector of reallocationpoints. The reallocationpoints are what determines
 when we recompute weights.}
 
 \item{target_portfolio}{a vector which is the target weights that one wants to shrink to in the first period.}
@@ -17,7 +17,7 @@ when we recompute weights.}
 \item{relative_loss}{a numeric of the initial value of the relative loss for the variance of the GMV portfolio.}
 }
 \value{
-a matrix of shrunk GMV portfolio weights where each row corresponds to each change point.
+a matrix of shrunk GMV portfolio weights where each row corresponds to each reallocation point.
 }
 \description{
 This function implements the second version of the recursive estimation of the GMV portfolio in the dynamic optimal shrinkage setting.
@@ -28,10 +28,10 @@ GMV portfolio using all available data. To see a more detailed description of th
 \examples{
 n <- 200*2
 p <- 80
-change_points <- c(199)
+reallocation_points <- c(199)
 data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 target_portfolio <- as.vector(rep(1,p))/p
-wGMVOverlapping(data, change_points, target_portfolio, 1)
+wGMVOverlapping(data, reallocation_points, target_portfolio, 1)
 }
 \references{
 \insertAllCited{}

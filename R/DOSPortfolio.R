@@ -5,7 +5,7 @@
 #' coefficients, one using overlapping samples and one using non-overlapping samples.
 #'
 #' @param data a matrix of size (n x p), where n>p, containing, for instance, log-returns.
-#' @param change_points a vector of change points. The change points are what determines when we recompute weights.
+#' @param reallocation_points a vector of change points. The change points are what determines when we recompute weights.
 #' @param target_portfolio a vector which is the target weights that one wants to shrink to in the first period.
 #' @param relative_loss possibly a numeric or NULL. The initial value of the relative loss for the variance of the GMV portfolio.
 #' If its NULL, then it will be initialized with the first subsample and the function \code{\link{r0Strategy}}.
@@ -24,16 +24,16 @@
 #' n <- 250*2
 #' p <- 80
 #' c <- p/n
-#' change_points <- c(120, 240)
+#' reallocation_points <- c(120, 240)
 #' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
-#' weights <- DOSPortfolio(data, change_points, 1)
+#' weights <- DOSPortfolio(data, reallocation_points, 1)
 #' @export
-DOSPortfolio <- function(data, change_points,
+DOSPortfolio <- function(data, reallocation_points,
                         relative_loss=NULL,
                         target_portfolio=OnesVec(ncol(data))/ncol(data),
                         shrinkage_type="non-overlapping") {
   data <- as.matrix(data)
-  new_DOSPortfolio(data, change_points, target_portfolio, relative_loss, shrinkage_type)
+  new_DOSPortfolio(data, reallocation_points, target_portfolio, relative_loss, shrinkage_type)
 }
 
 #' Constructor for the DOSPortfolio class.
@@ -41,27 +41,27 @@ DOSPortfolio <- function(data, change_points,
 #' @inheritParams DOSPortfolio
 #'
 #' @return a DOSPortfolio class.
-new_DOSPortfolio <- function(data, change_points, target_portfolio, relative_loss, shrinkage_type) {
+new_DOSPortfolio <- function(data, reallocation_points, target_portfolio, relative_loss, shrinkage_type) {
   # Check dtypes of inputs
   stopifnot(is.matrix(data))
-  stopifnot(is.vector(change_points))
+  stopifnot(is.vector(reallocation_points))
   stopifnot(is.vector(target_portfolio))
   match.arg(shrinkage_type, c("overlapping", "non-overlapping"))
 
   # Check the validity of the input other than it being the right type.
-  validate_input(data, change_points, target_portfolio, relative_loss, shrinkage_type)
+  validate_input(data, reallocation_points, target_portfolio, relative_loss, shrinkage_type)
 
   # TODO: better way to solve this?
   if (is.null(relative_loss)) {
-    S <- stats::var(data[1:change_points[1],])
+    S <- stats::var(data[1:reallocation_points[1],])
     relative_loss <- r0Strategy(S_inv = solve(S), S=S, target_portfolio = target_portfolio,
-                                c = ncol(data)/change_points[1])
+                                c = ncol(data)/reallocation_points[1])
   }
 
   if (shrinkage_type == "overlapping") {
-    x <- wGMVOverlapping(data, change_points, target_portfolio, relative_loss)
+    x <- wGMVOverlapping(data, reallocation_points, target_portfolio, relative_loss)
   }else{
-    x <- wGMVNonOverlapping(data, change_points, target_portfolio, relative_loss)
+    x <- wGMVNonOverlapping(data, reallocation_points, target_portfolio, relative_loss)
   }
   # add mean variance options here.
   structure(list("weights"=x,
@@ -75,13 +75,13 @@ new_DOSPortfolio <- function(data, change_points, target_portfolio, relative_los
 #' functions. Is called for its side-effects.
 #'
 #' @param data the data to validated, should be on long format.
-#' @param change_points a vector of break points.
+#' @param reallocation_points a vector of break points.
 #' @param target_portfolio the target vector at time point 0.
 #' @param relative_loss the relative loss towards the GMV portfolios variance.
 #' @param shrinkage_type what type of shrinkage method to be used.
 #'
 #' @return NULL, only called for its side effects
-validate_input <- function(data, change_points, target_portfolio, relative_loss, shrinkage_type) {
+validate_input <- function(data, reallocation_points, target_portfolio, relative_loss, shrinkage_type) {
   if (!(ncol(data) > 2)){
     stop("Need more than two assets (columns) in data.", call. = FALSE)
   }
@@ -89,17 +89,17 @@ validate_input <- function(data, change_points, target_portfolio, relative_loss,
     stop("More assets (columns) than observations (rows).",
          call. = FALSE)
   }
-  if (change_points[1] > nrow(data)) {
+  if (reallocation_points[1] > nrow(data)) {
     stop("First break point is past the number of observations.",
          call. = FALSE)
   }
-  if (any(!(diff(change_points) > 0))) {
+  if (any(!(diff(reallocation_points) > 0))) {
     stop("The break points need to be in increasing order",
          call. = FALSE)
   }
   if (shrinkage_type == "non-overlapping") {
     # assert that all subsamples are of correct size
-    if (any(ncol(data)/diff(change_points) > 1)) {
+    if (any(ncol(data)/diff(reallocation_points) > 1)) {
       stop("Non-overlapping estimator can not handle concentration ratios above one.
             Consider excluding one (or more) break point(s) or provide more data.", call.=FALSE)
     }

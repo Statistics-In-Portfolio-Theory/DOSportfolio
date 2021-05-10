@@ -6,7 +6,7 @@
 \usage{
 DOSPortfolio(
   data,
-  change_points,
+  reallocation_points,
   relative_loss = NULL,
   target_portfolio = OnesVec(ncol(data))/ncol(data),
   shrinkage_type = "non-overlapping"
@@ -15,7 +15,7 @@ DOSPortfolio(
 \arguments{
 \item{data}{a matrix of size (n x p), where n>p, containing, for instance, log-returns.}
 
-\item{change_points}{a vector of change points. The change points are what determines when we recompute weights.}
+\item{reallocation_points}{a vector of change points. The change points are what determines when we recompute weights.}
 
 \item{relative_loss}{possibly a numeric or NULL. The initial value of the relative loss for the variance of the GMV portfolio.
 If its NULL, then it will be initialized with the first subsample and the function \code{\link{r0Strategy}}.}
@@ -38,9 +38,9 @@ coefficients, one using overlapping samples and one using non-overlapping sample
 n <- 250*2
 p <- 80
 c <- p/n
-change_points <- c(120, 240)
+reallocation_points <- c(120, 240)
 data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
-weights <- DOSPortfolio(data, change_points, 1)
+weights <- DOSPortfolio(data, reallocation_points, 1)
 }
 \references{
 \insertAllCited{}

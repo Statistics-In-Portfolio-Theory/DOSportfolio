@@ -38,9 +38,8 @@ n <- 25*2
 p <- 15
 # Simulate data
 data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
-change_points <- c(25, 42)
-# use the first subsample to estimate the relative loss
-(portfolios <- DOSPortfolio(data, change_points))
+reallocation_points <- c(25, 42)
+(portfolios <- DOSPortfolio(data, reallocation_points))
 ```
 To read the documentation you can simply use `?DOSPortfolio`.
 
