@@ -2,20 +2,25 @@
 % Please edit documentation in R/overlapping.R
 \name{ComputeBeta}
 \alias{ComputeBeta}
-\title{A helper function for computation of coefficients.}
+\title{A helper function for computing beta coefficients used in the case of the overlapping sample \insertCite{BODNAR21dynshrink}{DOSPortfolio}}
 \usage{
 ComputeBeta(i, j, Psi)
 }
 \arguments{
-\item{i}{integer a integer greater than one.}
+\item{i}{integer, an integer greater than one.}
 
-\item{j}{integer a integer greater than one.}
+\item{j}{integer, an integer greater than one.}
 
-\item{Psi}{vector of shrinkage coefficients.}
+\item{Psi}{vector, the vector of the optimal shrinkage intensities computed in the previous step of the recursion.}
 }
 \value{
 a number
 }
 \description{
-Function which computes the coefficients (denoted beta) for the recursive formulas in determining K from Bodnar et. al. 2021
+The functions computes the beta coefficients from Eq. (2.20) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
+which are used in the recursive computation of the dynamic shrinkage estimator of the GMV portfolio weights in the
+case of overlapping samples.
+}
+\references{
+\insertAllCited{}
 }

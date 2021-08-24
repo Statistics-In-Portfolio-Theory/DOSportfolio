@@ -30,8 +30,8 @@ The main interface to the package is `DOSPortfolio::DOSPortfolio` which acts as 
 n <- 25*2
 p <- 15
 # generate a covariance matrix
-Sigma <- generate_sigma(p)
-data <- matrix(rt(n*p, df=5), ncol=p, nrow=n) %*% t(chol(Sigma))
+Sigma <- HDShOP::RandCovMtrx(p)
+data <- 5/3 * matrix(rt(n*p, df=5), ncol=p, nrow=n) %*% t(chol(Sigma))
 ```
 Notice that it is a matrix on _long_ format. Each column is assumed to be the time series of an asset. _We assume that the returns are ordered in time_. The observation on the first row was observed before the observations on the second and so forth. To construct the DOS portfolio we need to specify the number of _reallocation points_ and when these happen. Since `data` is a matrix on long format, we work with the row index. The DOS portfolio is then constructed as
 ```{r dosportfolio}

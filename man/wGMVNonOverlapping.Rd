@@ -2,28 +2,37 @@
 % Please edit documentation in R/non_overlapping.R
 \name{wGMVNonOverlapping}
 \alias{wGMVNonOverlapping}
-\title{The (non overlapping) Global Minimum Variance (GMV) portfolio using a dynamic optimal shrinkage scheme.}
+\title{Dynamic optimal shrinkage estimator of the weights of the global minimum
+variance portfolio when non-overlapping samples are used.}
 \usage{
 wGMVNonOverlapping(data, reallocation_points, target_portfolio, relative_loss)
 }
 \arguments{
-\item{data}{a matrix of size (n x p), where n>p, containing a sample of p-dimensional vectors of asset returns.}
+\item{data}{an n by p matrix of asset returns. Columns represent different
+assets rows are observations, where n>p, containing, for instance, log-returns.}
 
-\item{reallocation_points}{a vector of reallocationpoints. The reallocationpoints are what determines
-when we recompute weights.}
+\item{reallocation_points}{a vector of reallocation points. The reallocation
+points determine when the holding portfolio should be reconstructed and its
+weights should be recomputed.}
 
-\item{target_portfolio}{a vector which is the target weights that one wants to shrink to in the first period.}
+\item{target_portfolio}{a vector which determines the weights of the target
+portfolio used when the shrinkage estimator of the global minimum variance
+portfolio is constructed for the first time.}
 
-\item{relative_loss}{a numeric of the initial value of the relative loss for the variance of the GMV portfolio.}
+\item{relative_loss}{possibly a numeric or NULL. The initial value of the
+relative loss in the variance of the target portfolio. If its NULL, then it
+will be initialized with the first subsample and the function
+\code{\link{r0Strategy}}.}
 }
 \value{
-a matrix of shrunk GMV portfolio weights where each row corresponds to each reallocation point.
+a matrix of the constructed weights at each reallocation point of the
+dynamic shrinkage estimator of the global minimum variance portfolio when
+non-overlapping samples are used.
 }
 \description{
-This function implements the recursive estimation of the GMV portfolio in the dynamic optimal shrinkage setting.
-The method demands that the data is on long format, observations are on rows and covariates are columns and that
-the number of rows are greater than the number of columns. This function estimates each GMV portfolio
-using the most recent data, e.g. from the last break point to the current.
+The function implements the dynamic shrinkage estimator of the weights of the
+global minimum-variance portfolio when the overlapping samples are used as
+given in Eq. (2.11) of \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio} .
 }
 \examples{
 n <- 200*2

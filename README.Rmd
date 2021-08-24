@@ -37,7 +37,7 @@ library(DOSPorfolio)
 n <- 25*2
 p <- 15
 # Simulate data
-data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
+data <- sqrt(5/3) * matrix(rt(n*p, df=5), ncol=p, nrow=n)
 reallocation_points <- c(25, 42)
 (portfolios <- DOSPortfolio(data, reallocation_points))
 ```
@@ -45,7 +45,7 @@ To read the documentation you can simply use `?DOSPortfolio`.
 
 ## TODO:
 
-- Finish tests.
+- Create summary function so that one can summaries the portfolios as done in [@BODNAR21dynshrink].
 - Include test on finite fourth moment, summary function to generate table from the article?
 - Setup so that the portfolio estimators can work with the `tsibble` package?
 - Extend theory to mean-variance portfolio (...)

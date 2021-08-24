@@ -1,10 +1,9 @@
 test_that("non overlapping estimator, weights matrix ", {
   n <- 25
   p <- 10
-  Sigma <- generate_sigma(p)
-  data <- matrix(rt(n*p, df=5), ncol=p, nrow=n) %*% t(chol(Sigma))
+  data <- 5/3 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
 
-  target_portfolio <- OnesVec(p)/p
+  target_portfolio <- rep(1,p)/p
   reallocation_points <- c(12)
   relative_loss <- 0
 
@@ -15,10 +14,9 @@ test_that("non overlapping estimator, weights matrix ", {
 test_that("non overlapping estimator, weights matrix rows are portfolios", {
   n <- 250
   p <- 10
-  Sigma <- generate_sigma(p)
-  data <- matrix(rt(n*p, df=5), ncol=p, nrow=n) %*% t(chol(Sigma))
+  data <- 5/3 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
 
-  target_portfolio <- OnesVec(p)/p
+  target_portfolio <- rep(1,p)/p
   reallocation_points <- c(12, 100, 150)
   relative_loss <- 1.22
 
@@ -33,10 +31,9 @@ test_that("non overlapping estimator, weights matrix rows are portfolios", {
 test_that("non overlapping estimator, perfect guess of target portfolio", {
   n <- 25
   p <- 10
-  Sigma <- generate_sigma(p)
-  data <- matrix(rt(n*p, df=5), ncol=p, nrow=n) %*% t(chol(Sigma))
+  data <- 5/3 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
 
-  target_portfolio <- OnesVec(p)/p
+  target_portfolio <- rep(1,p)/p
   weights <- wGMVNonOverlapping(data,
                              reallocation_points=c(12),
                              target_portfolio=target_portfolio,

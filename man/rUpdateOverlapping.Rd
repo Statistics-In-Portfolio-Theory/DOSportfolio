@@ -2,22 +2,25 @@
 % Please edit documentation in R/overlapping.R
 \name{rUpdateOverlapping}
 \alias{rUpdateOverlapping}
-\title{The recursive scheme for updating the relative loss in the overlapping scheme.}
+\title{The recursive estimation for updating the relative loss in the variance of the
+holding portfolio.}
 \usage{
 rUpdateOverlapping(Psi, c, prev_R, K)
 }
 \arguments{
-\item{Psi}{vector of shrinkage coefficients.}
+\item{Psi}{a vector of shrinkage coefficients.}
 
-\item{c}{numeric between 0 and 1. It is the concentration ration.}
+\item{c}{a numeric between 0 and 1. It is the concentration ration.}
 
-\item{prev_R}{numeric greater than 0, The previous value of the relative loss}
+\item{prev_R}{a numeric greater than 0, The previous value of the relative loss}
 
-\item{K}{numeric parameter.}
+\item{K}{a numeric parameter.}
 }
 \value{
 a number
 }
 \description{
-The recursive scheme for updating the relative loss in the overlapping scheme.
+This function implements equation (2.19), the recursive estimation for
+updating the relative loss in the variance of the holding portfolio in the
+overlapping scheme.
 }

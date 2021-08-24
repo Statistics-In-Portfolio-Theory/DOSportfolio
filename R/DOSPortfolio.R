@@ -1,19 +1,36 @@
 #' The Dynamic Optimal Shrinkage Portfolio interface.
 #'
-#' This is the main interface to compute portfolios using the Dynamic Optimal Shrinkage estimation from
-#' \insertCite{BODNAR21dynshrink}{DOSPortfolio}. It implements two different estimators for the shrinkage
-#' coefficients, one using overlapping samples and one using non-overlapping samples.
+#' This is the main function to compute the weights of the global minimum
+#' variance portfolio by using the dynamic optimal shrinkage estimators presented
+#' in Eq. (2.11) and Eq. (2.23) of
+#' \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio}. It implements two
+#' different estimators for the shrinkage coefficients, one using overlapping
+#' samples (see, Eq. (2.23) of
+#' \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio}) and one using
+#' non-overlapping samples (see, Eq. (2.11) of
+#' \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio}).
 #'
-#' @param data a matrix of size (n x p), where n>p, containing, for instance, log-returns.
-#' @param reallocation_points a vector of change points. The change points are what determines when we recompute weights.
-#' @param target_portfolio a vector which is the target weights that one wants to shrink to in the first period.
-#' @param relative_loss possibly a numeric or NULL. The initial value of the relative loss for the variance of the GMV portfolio.
-#' If its NULL, then it will be initialized with the first subsample and the function \code{\link{r0Strategy}}.
-#' @param shrinkage_type the type of shrinkage estimator to use. The two implemented are "non-overlapping" and "overlapping".
+#' @param data an n by p matrix of asset returns. Columns represent different
+#' assets rows are observations, where n>p, containing, for instance, log-returns.
+#' @param reallocation_points a vector of reallocation points. The reallocation
+#' points determine when the holding portfolio should be reconstructed and its
+#' weights should be recomputed.
+#' @param target_portfolio a vector which determines the weights of the target
+#' portfolio used when the shrinkage estimator of the global minimum variance
+#' portfolio is constructed for the first time.
+#' @param relative_loss possibly a numeric or NULL. The initial value of the
+#' relative loss in the variance of the target portfolio. If its NULL, then it
+#' will be initialized with the first subsample and the function
+#' \code{\link{r0Strategy}}.
+#' @param shrinkage_type the type of shrinkage estimator to use. The two
+#' implemented approaches are "non-overlapping" and "overlapping".
 #'
-#' @return An S3 class which contains the a matrix of the shrunk GMV portfolio weights and what type of shrinkage
-#' estimator that was used to construct the portfolios. Each row of the weight matrix corresponds to the change point
-#' and the column corresponds to the asset.
+#' @return An S3 class which contains the matrix of the constructed weights of
+#' the dynamic shrinkage estimator of the global minimum variance portfolio and
+#' the type of the shrinkage estimator (i.e., "overlapping" or
+#' "non-overlapping") that was used in its construction. Each row of the weight
+#' matrix corresponds to the reallocation point and the column corresponds to the
+#' asset.
 #'
 #' @seealso Section 2.1 and 2.2 of \insertCite{BODNAR21dynshrink}{DOSPortfolio}
 #'
@@ -25,23 +42,28 @@
 #' p <- 80
 #' c <- p/n
 #' reallocation_points <- c(120, 240)
-#' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
+#' data <- sqrt(5/3) * matrix(rt(n*p, df=5) , ncol=p, nrow=n)
 #' weights <- DOSPortfolio(data, reallocation_points, 1)
 #' @export
-DOSPortfolio <- function(data, reallocation_points,
-                        relative_loss=NULL,
-                        target_portfolio=OnesVec(ncol(data))/ncol(data),
-                        shrinkage_type="non-overlapping") {
+DOSPortfolio <- function(data,
+                         reallocation_points,
+                         relative_loss=NULL,
+                         target_portfolio=rep(1,ncol(data))/ncol(data),
+                         shrinkage_type="non-overlapping") {
   data <- as.matrix(data)
   new_DOSPortfolio(data, reallocation_points, target_portfolio, relative_loss, shrinkage_type)
 }
 
-#' Constructor for the DOSPortfolio class.
+#' Constructor for the DOSPortfolio class
 #'
 #' @inheritParams DOSPortfolio
 #'
 #' @return a DOSPortfolio class.
-new_DOSPortfolio <- function(data, reallocation_points, target_portfolio, relative_loss, shrinkage_type) {
+new_DOSPortfolio <- function(data,
+                             reallocation_points,
+                             target_portfolio,
+                             relative_loss,
+                             shrinkage_type) {
   # Check dtypes of inputs
   stopifnot(is.matrix(data))
   stopifnot(is.vector(reallocation_points))
@@ -71,14 +93,11 @@ new_DOSPortfolio <- function(data, reallocation_points, target_portfolio, relati
 
 #' Validates input to the DOSPortfolio function.
 #'
-#' This function is exists to validate the assumptions made to derive the analytic formulas implemented in the different
-#' functions. Is called for its side-effects.
+#' This function validates the assumptions made to derive the analytic formulas
+#' implemented in the different functions of the package. It is called for its
+#' side-effects.
 #'
-#' @param data the data to validated, should be on long format.
-#' @param reallocation_points a vector of break points.
-#' @param target_portfolio the target vector at time point 0.
-#' @param relative_loss the relative loss towards the GMV portfolios variance.
-#' @param shrinkage_type what type of shrinkage method to be used.
+#' @inheritParams DOSPortfolio
 #'
 #' @return NULL, only called for its side effects
 validate_input <- function(data, reallocation_points, target_portfolio, relative_loss, shrinkage_type) {

@@ -8,7 +8,7 @@
 
 The goal of DOSPorfolio is to provide a simple interface for computing
 portfolio weights according to the dynamic weighting scheme from
-(Bodnar, Parolya, and Thorsén 2021).
+(Bodnar, Parolya, and Thorsen 2021).
 
 ## Installation
 
@@ -29,7 +29,7 @@ library(DOSPorfolio)
 n <- 25*2
 p <- 15
 # Simulate data
-data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
+data <- sqrt(5/3) * matrix(rt(n*p, df=5), ncol=p, nrow=n)
 reallocation_points <- c(25, 42)
 (portfolios <- DOSPortfolio(data, reallocation_points))
 ```
@@ -38,7 +38,8 @@ To read the documentation you can simply use `?DOSPortfolio`.
 
 ## TODO:
 
--   Finish tests.
+-   Create summary function so that one can summaries the portfolios as
+    done in (Bodnar, Parolya, and Thorsen 2021).
 -   Include test on finite fourth moment, summary function to generate
     table from the article?
 -   Setup so that the portfolio estimators can work with the `tsibble`
@@ -51,9 +52,9 @@ To read the documentation you can simply use `?DOSPortfolio`.
 
 <div id="ref-BODNAR21dynshrink" class="csl-entry">
 
-Bodnar, Taras, Nestor Parolya, and Erik Thorsén. 2021. “Dynamic
+Bodnar, Taras, Nestor Parolya, and Erik Thorsen. 2021. “Dynamic
 Shrinkage Estimation of the High-Dimensional Minimum-Variance
-Portfolio.” *Test Journal* test vol.: x–1.
+Portfolio.” <http://arxiv.org/abs/2106.02131>.
 
 </div>
 

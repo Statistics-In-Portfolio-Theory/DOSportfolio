@@ -1,16 +1,17 @@
-#' The (overlapping) Global Minimum Variance (GMV) portfolio using a dynamic optimal shrinkage scheme.
+#' Dynamic optimal shrinkage estimator of the weights of the global minimum
+#' variance portfolio when overlapping samples are used.
 #'
-#' This function implements the second version of the recursive estimation of the GMV portfolio in the dynamic optimal shrinkage setting.
-#' The difference between this function and the function \code{\link{wGMVNonOverlapping}} is that this function estimates each
-#' GMV portfolio using all available data. To see a more detailed description of the method, see vignette
-#' \code{vignette("introduction", package = "DOSPortfolio")}.
+#' The function implements the dynamic shrinkage estimator of the weights of the
+#' global minimum-variance portfolio when the overlapping samples are used as
+#' given in Eq. (2.23) of  \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio}.
 #'
 #' @inheritParams wGMVNonOverlapping
 #'
 #' @seealso \code{\link{wGMVNonOverlapping}}
 #'
-#' @return a matrix of shrunk GMV portfolio weights where each row corresponds to each reallocation point.
-#' @seealso section 2.2 \insertCite{BODNAR21dynshrink}{DOSPortfolio}
+#' @return a matrix of the constructed weights at each reallocation point of the
+#' dynamic shrinkage estimator of the global minimum variance portfolio when
+#' overlapping samples are used.
 #'
 #' @references
 #'  \insertAllCited{}
@@ -61,15 +62,21 @@ wGMVOverlapping <- function(data, reallocation_points, target_portfolio, relativ
   weights_matrix
 }
 
-#' A helper function for computation of coefficients.
+#' A helper function for computing beta coefficients used in the case of the overlapping sample \insertCite{BODNAR21dynshrink}{DOSPortfolio}
 #'
-#' Function which computes the coefficients (denoted beta) for the recursive formulas in determining K from Bodnar et. al. 2021
+#' The functions computes the beta coefficients from Eq. (2.20) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
+#' which are used in the recursive computation of the dynamic shrinkage estimator of the GMV portfolio weights in the
+#' case of overlapping samples.
 #'
-#' @param i integer a integer greater than one.
-#' @param j integer a integer greater than one.
-#' @param Psi vector of shrinkage coefficients.
+#' @param i an integer greater than one.
+#' @param j an integer greater than one.
+#' @param Psi vector, the vector of the optimal shrinkage intensities computed in the previous step of the recursion.
 #'
 #' @return a number
+#'
+#' @references
+#' \insertAllCited{}
+#'
 ComputeBeta <- function(i,j,Psi){
   if (i==0){
     return(prod((1-Psi[1:i])))
@@ -80,22 +87,31 @@ ComputeBeta <- function(i,j,Psi){
   Psi[j]*prod((1-Psi[i:j]))
 }
 
-#' The recursive scheme for updating the relative loss in the overlapping scheme.
+#' The recursive estimation for updating the relative loss in the variance of the
+#' holding portfolio.
 #'
-#' @param Psi vector of shrinkage coefficients.
-#' @param c numeric between 0 and 1. It is the concentration ration.
-#' @param prev_R numeric greater than 0, The previous value of the relative loss
-#' @param K numeric parameter.
+#' This function implements equation (2.19), the recursive estimation for
+#' updating the relative loss in the variance of the holding portfolio in the
+#' overlapping scheme.
+#'
+#' @param Psi a vector of shrinkage coefficients.
+#' @param c a numeric between 0 and 1. It is the concentration ration.
+#' @param prev_R a numeric greater than 0, The previous value of the relative loss
+#' @param K a numeric parameter.
 #'
 #' @return a number
 rUpdateOverlapping <- function(Psi, c, prev_R, K){
   Psi^2 * c/(1-c) + (1-Psi)^2*prev_R + 2*Psi*(1-Psi)*(K-1)
 }
 
-#' A small helper function which computes the terms D_{ij} from Bodnar et al. 2021
+#' A helper function for computing D-coefficients used in the case of the overlapping sample \insertCite{BODNAR21dynshrink}{DOSPortfolio}
 #'
-#' @param Ci numeric concentration ratio of period i
-#' @param Cj numeric concentration ratio of period j
+#' The functions computes the D_{j,i} coefficients from Eq. (2.21) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
+#' which are used in the recursive computation of the dynamic shrinkage estimator of the GMV portfolio weights in the case
+#' of overlapping samples.
+#'
+#' @param Ci a number equal to the concentration ratio of period i
+#' @param Cj a number equal to the concentration ratio of period j
 #'
 #' @return a number
 ComputeD <- function(Ci,Cj) {

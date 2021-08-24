@@ -1,4 +1,4 @@
 library(testthat)
-library(DOSPorfolio)
+library(DOSPortfolio)
 
-test_check("DOSPorfolio")
+test_check("DOSPortfolio")

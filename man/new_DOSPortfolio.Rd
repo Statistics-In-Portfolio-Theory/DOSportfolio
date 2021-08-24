@@ -2,7 +2,7 @@
 % Please edit documentation in R/DOSPortfolio.R
 \name{new_DOSPortfolio}
 \alias{new_DOSPortfolio}
-\title{Constructor for the DOSPortfolio class.}
+\title{Constructor for the DOSPortfolio class}
 \usage{
 new_DOSPortfolio(
   data,
@@ -13,20 +13,28 @@ new_DOSPortfolio(
 )
 }
 \arguments{
-\item{data}{a matrix of size (n x p), where n>p, containing, for instance, log-returns.}
+\item{data}{an n by p matrix of asset returns. Columns represent different
+assets rows are observations, where n>p, containing, for instance, log-returns.}
 
-\item{reallocation_points}{a vector of change points. The change points are what determines when we recompute weights.}
+\item{reallocation_points}{a vector of reallocation points. The reallocation
+points determine when the holding portfolio should be reconstructed and its
+weights should be recomputed.}
 
-\item{target_portfolio}{a vector which is the target weights that one wants to shrink to in the first period.}
+\item{target_portfolio}{a vector which determines the weights of the target
+portfolio used when the shrinkage estimator of the global minimum variance
+portfolio is constructed for the first time.}
 
-\item{relative_loss}{possibly a numeric or NULL. The initial value of the relative loss for the variance of the GMV portfolio.
-If its NULL, then it will be initialized with the first subsample and the function \code{\link{r0Strategy}}.}
+\item{relative_loss}{possibly a numeric or NULL. The initial value of the
+relative loss in the variance of the target portfolio. If its NULL, then it
+will be initialized with the first subsample and the function
+\code{\link{r0Strategy}}.}
 
-\item{shrinkage_type}{the type of shrinkage estimator to use. The two implemented are "non-overlapping" and "overlapping".}
+\item{shrinkage_type}{the type of shrinkage estimator to use. The two
+implemented approaches are "non-overlapping" and "overlapping".}
 }
 \value{
 a DOSPortfolio class.
 }
 \description{
-Constructor for the DOSPortfolio class.
+Constructor for the DOSPortfolio class
 }

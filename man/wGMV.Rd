@@ -2,11 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{wGMV}
 \alias{wGMV}
-\title{The Global Minimum Variance (GMV) portfolio weights. This function
-computes the global minimum portfolio weights which is part of Modern
-Portfolio Theory, Markowitz (1952). For a positive semi-definite matrix
-S, the weights are obtained as the solution to a quadratic optimization
-problem given that the solution sums to one.}
+\title{Sample estimator of the weights of the global minimum variance portfolio}
 \usage{
 wGMV(S_inv)
 }
@@ -17,9 +13,7 @@ wGMV(S_inv)
 a vector, which is the Global Minimum Variance Portfolio.
 }
 \description{
-The Global Minimum Variance (GMV) portfolio weights. This function
-computes the global minimum portfolio weights which is part of Modern
-Portfolio Theory, Markowitz (1952). For a positive semi-definite matrix
-S, the weights are obtained as the solution to a quadratic optimization
-problem given that the solution sums to one.
+The functions computes the sample estimate of the weights of the global
+minimum variance portfolio (see, e.g., Eq. (1.4) of
+\insertCite{BODNAR21dynshrink;textual}{DOSPortfolio})).
 }

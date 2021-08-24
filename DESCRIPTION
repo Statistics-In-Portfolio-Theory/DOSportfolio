@@ -1,6 +1,6 @@
 Package: DOSPortfolio
-Title: Dynamic Optimal Shrinkage of Portfolios
-Version: 0.0.0.9000
+Title: Dynamic Optimal Shrinkage of Optimal Portfolios
+Version: 0.1.0
 Authors@R: 
     c(person(given = "Taras", 
              family = "Bodnar", 
@@ -14,21 +14,28 @@ Authors@R:
            family = "Thorsén",
            role = c("aut", "cre"),
            email = "erik.thorsen@math.su.se",
-           comment = c(ORCID = "...")))
-Description: This package contains a number of methods which constructs portfolios using dynamic shrinkage estimation. The estimatiors in this package are derived using results from random matrix theory and therefore rely on quite few assumptions. The main interface validates these assumptions though the individual functions do not.
-License: MIT + file LICENSE
+           comment = c(ORCID = "0000-0001-5992-1216")))
+Maintainer: Erik Thorsen <erik.thorsen@math.su.se>
+Author: Taras Bodnar [aut] (<https://orcid.org/0000-0001-7855-8221>),
+    Nestor Parolya [aut] (<https://orcid.org/0000-0003-2147-2288>),
+    Erik Thorsén [auth, cre] (<https://orcid.org/0000-0001-5992-1216>)
+Description: 
+  Constructs dynamic optimal shrinkage estimators for the weights of the global minimum variance portfolio which are reconstructed at given reallocation points as derived in Bodnar, Parolya, and Thorsén (2021) (<https://arxiv.org/abs/2106.02131>). Two dynamic shrinkage estimators are available in this package. One using overlapping samples while the other use nonoverlapping samples.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
+RdMacros: Rdpack
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Suggests: 
+Depends:
+    R (>= 3.5.0)
+Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports:
-    DOSPorfolio,
+    Rdpack (>= 0.7),
     stats,
-    Rdpack
+    HDShOP
 VignetteBuilder: knitr
-RdMacros: Rdpack

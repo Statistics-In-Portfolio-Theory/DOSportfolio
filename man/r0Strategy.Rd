@@ -2,9 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{r0Strategy}
 \alias{r0Strategy}
-\title{Simple plugin estimator for the relative loss. This function computes a
-simple plugin estimator for the relative loss to the variance of the GMV portfolio
-and the target portfolio.}
+\title{Computes the relative loss of the target portfolio used}
 \usage{
 r0Strategy(S_inv, S, target_portfolio, c)
 }
@@ -13,7 +11,9 @@ r0Strategy(S_inv, S, target_portfolio, c)
 
 \item{S}{a sample covariance matrix.}
 
-\item{target_portfolio}{a vector representing a target portfolio which is shrunk to.}
+\item{target_portfolio}{a vector which determines the weights of the target
+portfolio used when the shrinkage estimator of the global minimum variance
+portfolio is constructed for the first time.}
 
 \item{c}{a numeric which is the concentration ratio.}
 }
@@ -21,7 +21,10 @@ r0Strategy(S_inv, S, target_portfolio, c)
 vector
 }
 \description{
-Simple plugin estimator for the relative loss. This function computes a
-simple plugin estimator for the relative loss to the variance of the GMV portfolio
-and the target portfolio.
+The function computes the initial value of the relative loss in the variance
+of the target portfolio as given in Eq. (2.10) of
+\insertCite{BODNAR21dynshrink;textual}{DOSPortfolio}.
+}
+\references{
+\insertAllCited{}
 }

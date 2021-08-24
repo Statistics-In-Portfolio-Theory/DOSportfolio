@@ -2,18 +2,20 @@
 % Please edit documentation in R/overlapping.R
 \name{ComputeD}
 \alias{ComputeD}
-\title{A small helper function which computes the terms D_{ij} from Bodnar et al. 2021}
+\title{A helper function for computing D-coefficients used in the case of the overlapping sample \insertCite{BODNAR21dynshrink}{DOSPortfolio}}
 \usage{
 ComputeD(Ci, Cj)
 }
 \arguments{
-\item{Ci}{numeric concentration ratio of period i}
+\item{Ci}{numeric, a number equal to the concentration ratio of period i}
 
-\item{Cj}{numeric concentration ratio of period j}
+\item{Cj}{numeric, a number equal to the concentration ratio of period j}
 }
 \value{
 a number
 }
 \description{
-A small helper function which computes the terms D_{ij} from Bodnar et al. 2021
+The functions computes the D_{j,i} coefficients from Eq. (2.21) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
+which are used in the recursive computation of the dynamic shrinkage estimator of the GMV portfolio weights in the case
+of overlapping samples.
 }

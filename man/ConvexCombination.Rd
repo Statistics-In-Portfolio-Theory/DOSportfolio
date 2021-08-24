@@ -19,3 +19,4 @@ a vector
 \description{
 Computes a convex combination between two vectors.
 }
+\keyword{internal}
