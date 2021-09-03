@@ -4,7 +4,7 @@
 \alias{wGMV}
 \title{Sample estimator of the weights of the global minimum variance portfolio}
 \usage{
-wGMV(S_inv)
+wGMV(data)
 }
 \arguments{
 \item{S_inv}{the inverse of a sample covariance matrix}

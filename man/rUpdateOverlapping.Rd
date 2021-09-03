@@ -12,7 +12,7 @@ rUpdateOverlapping(Psi, c, prev_R, K)
 
 \item{c}{a numeric between 0 and 1. It is the concentration ration.}
 
-\item{prev_R}{a numeric greater than 0, The previous value of the relative loss}
+\item{prev_R}{a numeric greater than 0, the previous value of the relative loss}
 
 \item{K}{a numeric parameter.}
 }

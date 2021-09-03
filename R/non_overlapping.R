@@ -8,13 +8,13 @@
 #' @param data an n by p matrix of asset returns. Columns represent different
 #' assets rows are observations, where n>p, containing, for instance, log-returns.
 #' @param reallocation_points a vector of reallocation points. The reallocation
-#' points determine when the holding portfolio should be reconstructed and its
+#' points determine when the holding portfolio should be reconstructed and it is
 #' weights should be recomputed.
 #' @param target_portfolio a vector which determines the weights of the target
 #' portfolio used when the shrinkage estimator of the global minimum variance
 #' portfolio is constructed for the first time.
 #' @param relative_loss possibly a numeric or NULL. The initial value of the
-#' relative loss in the variance of the target portfolio. If its NULL, then it
+#' relative loss in the variance of the target portfolio. If it is NULL, then it
 #' will be initialized with the first subsample and the function
 #' \code{\link{r0Strategy}}.
 #'
@@ -30,7 +30,7 @@
 #' n <- 200*2
 #' p <- 80
 #' reallocation_point <- c(199)
-#' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
+#' data <- 3/5 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
 #' target_portfolio <- as.vector(rep(1,p))/p
 #' wGMVNonOverlapping(data, reallocation_point, target_portfolio, 1)
 #' @export

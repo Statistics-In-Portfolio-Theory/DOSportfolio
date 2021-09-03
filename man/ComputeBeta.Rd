@@ -7,9 +7,9 @@
 ComputeBeta(i, j, Psi)
 }
 \arguments{
-\item{i}{integer, an integer greater than one.}
+\item{i}{an integer greater than one.}
 
-\item{j}{integer, an integer greater than one.}
+\item{j}{an integer greater than one.}
 
 \item{Psi}{vector, the vector of the optimal shrinkage intensities computed in the previous step of the recursion.}
 }
@@ -17,10 +17,11 @@ ComputeBeta(i, j, Psi)
 a number
 }
 \description{
-The functions computes the beta coefficients from Eq. (2.20) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
+The function computes the beta coefficients from Eq. (2.20) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
 which are used in the recursive computation of the dynamic shrinkage estimator of the GMV portfolio weights in the
 case of overlapping samples.
 }
 \references{
 \insertAllCited{}
 }
+\keyword{internal}

@@ -12,7 +12,7 @@ wGMVNonOverlapping(data, reallocation_points, target_portfolio, relative_loss)
 assets rows are observations, where n>p, containing, for instance, log-returns.}
 
 \item{reallocation_points}{a vector of reallocation points. The reallocation
-points determine when the holding portfolio should be reconstructed and its
+points determine when the holding portfolio should be reconstructed and it is
 weights should be recomputed.}
 
 \item{target_portfolio}{a vector which determines the weights of the target
@@ -20,7 +20,7 @@ portfolio used when the shrinkage estimator of the global minimum variance
 portfolio is constructed for the first time.}
 
 \item{relative_loss}{possibly a numeric or NULL. The initial value of the
-relative loss in the variance of the target portfolio. If its NULL, then it
+relative loss in the variance of the target portfolio. If it is NULL, then it
 will be initialized with the first subsample and the function
 \code{\link{r0Strategy}}.}
 }

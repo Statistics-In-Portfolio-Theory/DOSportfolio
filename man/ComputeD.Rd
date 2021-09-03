@@ -7,15 +7,16 @@
 ComputeD(Ci, Cj)
 }
 \arguments{
-\item{Ci}{numeric, a number equal to the concentration ratio of period i}
+\item{Ci}{a number equal to the concentration ratio of period i}
 
-\item{Cj}{numeric, a number equal to the concentration ratio of period j}
+\item{Cj}{a number equal to the concentration ratio of period j}
 }
 \value{
 a number
 }
 \description{
-The functions computes the D_{j,i} coefficients from Eq. (2.21) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
+The function computes the \eqn{D_{j,i}} coefficients from Eq. (2.21) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
 which are used in the recursive computation of the dynamic shrinkage estimator of the GMV portfolio weights in the case
 of overlapping samples.
 }
+\keyword{internal}

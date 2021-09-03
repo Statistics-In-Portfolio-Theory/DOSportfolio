@@ -4,10 +4,25 @@
 #' minimum variance portfolio (see, e.g., Eq. (1.4) of
 #' \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio})).
 #'
-#' @param S_inv the inverse of a sample covariance matrix
+#' @param data an n by p matrix of asset returns. Columns represent different
+#' assets rows are observations, where n>p, containing, for instance, log-returns.
 #'
 #' @return a vector, which is the Global Minimum Variance Portfolio.
-wGMV <- function(S_inv) {S_inv%*%rep(1, nrow(S_inv)) / as.numeric(sum(S_inv))}
+#'
+#' @example
+#'
+#' n <- 200
+#' p <- 80
+#' data <- 3/5 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
+#' weights <- wGMV(data)
+#' # since the covariance matrix is the unit-matrix the weights should be close
+#' # to 1/p
+#' mean(abs(wGMV(data) - 1/p))
+wGMV <- function(data) {
+  S <- var(data)
+  S_inv <- solve(S)
+  S_inv%*%rep(1, nrow(S_inv)) / as.numeric(sum(S_inv))
+}
 
 #' Computes a convex combination between two vectors.
 #'
@@ -35,16 +50,28 @@ ConvexCombination <- function(x1, x2, lambda) {
 #' @references
 #'  \insertAllCited{}
 #'
-#' @param S_inv the inverse of a sample covariance matrix.
-#' @param S a sample covariance matrix.
+#' @param data an n by p matrix of asset returns. Columns represent different
+#' assets rows are observations, where n>p, containing, for instance, log-returns.
 #' @param target_portfolio a vector which determines the weights of the target
 #' portfolio used when the shrinkage estimator of the global minimum variance
 #' portfolio is constructed for the first time.
 #' @param c a numeric which is the concentration ratio.
 #'
 #' @return vector
+#'
+#' @example
+#'
+#' n <- 200*2
+#' p <- 80
+#' data <- 5/3 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
+#' # set a target portfolio, such as equally weighted
+#' b <- rep(1,p)/p
+#' r0Strategy(data, b, p/n)
+#'
 #' @export
-r0Strategy <- function(S_inv, S, target_portfolio, c){
+r0Strategy <- function(data, target_portfolio, c){
+  S <- var(data)
+  S_inv <- solve(S)
   (1-c)*(
     as.numeric(t(rep(1, nrow(S_inv))) %*% S_inv %*% rep(1, nrow(S_inv))) *
       as.numeric(t(target_portfolio) %*% S %*% target_portfolio)

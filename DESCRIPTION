@@ -1,5 +1,5 @@
 Package: DOSPortfolio
-Title: Dynamic Optimal Shrinkage of Optimal Portfolios
+Title: Dynamic Optimal Shrinkage Portfolio
 Version: 0.1.0
 Authors@R: 
     c(person(given = "Taras", 

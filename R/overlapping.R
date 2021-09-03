@@ -23,6 +23,7 @@
 #' data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 #' target_portfolio <- as.vector(rep(1,p))/p
 #' wGMVOverlapping(data, reallocation_points, target_portfolio, 1)
+#'
 #' @export
 wGMVOverlapping <- function(data, reallocation_points, target_portfolio, relative_loss) {
   p <- ncol(data)
@@ -64,7 +65,7 @@ wGMVOverlapping <- function(data, reallocation_points, target_portfolio, relativ
 
 #' A helper function for computing beta coefficients used in the case of the overlapping sample \insertCite{BODNAR21dynshrink}{DOSPortfolio}
 #'
-#' The functions computes the beta coefficients from Eq. (2.20) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
+#' The function computes the beta coefficients from Eq. (2.20) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
 #' which are used in the recursive computation of the dynamic shrinkage estimator of the GMV portfolio weights in the
 #' case of overlapping samples.
 #'
@@ -73,6 +74,8 @@ wGMVOverlapping <- function(data, reallocation_points, target_portfolio, relativ
 #' @param Psi vector, the vector of the optimal shrinkage intensities computed in the previous step of the recursion.
 #'
 #' @return a number
+#'
+#' @keywords internal
 #'
 #' @references
 #' \insertAllCited{}
@@ -96,22 +99,39 @@ ComputeBeta <- function(i,j,Psi){
 #'
 #' @param Psi a vector of shrinkage coefficients.
 #' @param c a numeric between 0 and 1. It is the concentration ration.
-#' @param prev_R a numeric greater than 0, The previous value of the relative loss
+#' @param prev_R a numeric greater than 0, the previous value of the relative loss
 #' @param K a numeric parameter.
 #'
 #' @return a number
+#'
+#' @keywords internal
+#'
+#' @example
+#' n <- 200
+#' p <- 80
+#' data <- 5/3 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
+#' b <- rep(1,p)/p
+#' r_init <- r0Strategy(data, b, p/n)
+#' # set a fixed shrinkage coef, only for showcasing the functions effect and
+#' # set the parameter K to an arbitrary value, as these are based on recursions
+#' # as well.
+#' psi <- 0.5
+#' rUpdateOverlapping(psi, p/n, prev_R=r_init, K=0.5)
+#'
 rUpdateOverlapping <- function(Psi, c, prev_R, K){
   Psi^2 * c/(1-c) + (1-Psi)^2*prev_R + 2*Psi*(1-Psi)*(K-1)
 }
 
 #' A helper function for computing D-coefficients used in the case of the overlapping sample \insertCite{BODNAR21dynshrink}{DOSPortfolio}
 #'
-#' The functions computes the D_{j,i} coefficients from Eq. (2.21) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
+#' The function computes the \eqn{D_{j,i}} coefficients from Eq. (2.21) in \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio},
 #' which are used in the recursive computation of the dynamic shrinkage estimator of the GMV portfolio weights in the case
 #' of overlapping samples.
 #'
 #' @param Ci a number equal to the concentration ratio of period i
 #' @param Cj a number equal to the concentration ratio of period j
+#'
+#' @keywords internal
 #'
 #' @return a number
 ComputeD <- function(Ci,Cj) {

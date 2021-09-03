@@ -4,18 +4,18 @@
 \alias{r0Strategy}
 \title{Computes the relative loss of the target portfolio used}
 \usage{
-r0Strategy(S_inv, S, target_portfolio, c)
+r0Strategy(data, target_portfolio, c)
 }
 \arguments{
-\item{S_inv}{the inverse of a sample covariance matrix.}
-
-\item{S}{a sample covariance matrix.}
-
 \item{target_portfolio}{a vector which determines the weights of the target
 portfolio used when the shrinkage estimator of the global minimum variance
 portfolio is constructed for the first time.}
 
 \item{c}{a numeric which is the concentration ratio.}
+
+\item{S_inv}{the inverse of a sample covariance matrix.}
+
+\item{S}{a sample covariance matrix.}
 }
 \value{
 vector
