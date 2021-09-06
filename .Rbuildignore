@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^README\.Rmd$
 ^workflow\.R$
+cran-comments\.md
