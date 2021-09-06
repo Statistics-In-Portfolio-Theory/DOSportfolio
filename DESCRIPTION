@@ -15,12 +15,16 @@ Authors@R:
            role = c("aut", "cre"),
            email = "erik.thorsen@math.su.se",
            comment = c(ORCID = "0000-0001-5992-1216")))
-Maintainer: Erik Thorsen <erik.thorsen@math.su.se>
+Maintainer: Erik Thorsén <erik.thorsen@math.su.se>
 Author: Taras Bodnar [aut] (<https://orcid.org/0000-0001-7855-8221>),
     Nestor Parolya [aut] (<https://orcid.org/0000-0003-2147-2288>),
-    Erik Thorsén [auth, cre] (<https://orcid.org/0000-0001-5992-1216>)
+    Erik Thorsén [aut, cre] (<https://orcid.org/0000-0001-5992-1216>)
 Description: 
-  Constructs dynamic optimal shrinkage estimators for the weights of the global minimum variance portfolio which are reconstructed at given reallocation points as derived in Bodnar, Parolya, and Thorsén (2021) (<https://arxiv.org/abs/2106.02131>). Two dynamic shrinkage estimators are available in this package. One using overlapping samples while the other use nonoverlapping samples.
+  Constructs dynamic optimal shrinkage estimators for the weights of the global 
+  minimum variance portfolio which are reconstructed at given reallocation 
+  points as derived in Bodnar, Parolya, and Thorsén (2021) (<arXiv:2106.02131>).
+  Two dynamic shrinkage estimators are available in this package. One using 
+  overlapping samples while the other use nonoverlapping samples.
 License: GPL-3
 URL: https://github.com/Statistics-In-Portfolio-Theory/DOSportfolio 
 Encoding: UTF-8
