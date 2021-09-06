@@ -7,7 +7,8 @@
 wGMV(data)
 }
 \arguments{
-\item{S_inv}{the inverse of a sample covariance matrix}
+\item{data}{an n by p matrix of asset returns. Columns represent different
+assets rows are observations, where n>p, containing, for instance, log-returns.}
 }
 \value{
 a vector, which is the Global Minimum Variance Portfolio.
@@ -16,4 +17,15 @@ a vector, which is the Global Minimum Variance Portfolio.
 The functions computes the sample estimate of the weights of the global
 minimum variance portfolio (see, e.g., Eq. (1.4) of
 \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio})).
+}
+\examples{
+
+n <- 200
+p <- 80
+data <- 3/5 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
+weights <- wGMV(data)
+# since the covariance matrix is the identity-matrix the estimated weights
+# should be close to the equally weighted portfolio.
+mean(abs(wGMV(data) - 1/p))
+
 }

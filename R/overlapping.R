@@ -36,8 +36,6 @@ wGMVOverlapping <- function(data, reallocation_points, target_portfolio, relativ
   for (idx in 1:length(reallocation_points)) {
     c_vec <- c(c_vec, p/reallocation_points[idx])
     data_subsample <- data[1:reallocation_points[idx],]
-    S <- stats::var(data_subsample)
-    S_chol_inv <- t(solve(chol(S)))
     if (idx == 1) {
       old_weights <- target_portfolio
     }else{
@@ -55,7 +53,7 @@ wGMVOverlapping <- function(data, reallocation_points, target_portfolio, relativ
     # Update the relative loss according to formula
     relative_loss <- psi^2 * c_vec[idx]/(1-c_vec[idx]) + (1-psi)^2*relative_loss + 2*psi*(1-psi)*(K-1)
     w_gmv_new <- ConvexCombination(
-      wGMV(S_chol_inv %*% t(S_chol_inv)),
+      wGMV(data),
       old_weights,
       psi)
     weights_matrix[idx,] <- w_gmv_new
@@ -105,19 +103,6 @@ ComputeBeta <- function(i,j,Psi){
 #' @return a number
 #'
 #' @keywords internal
-#'
-#' @example
-#' n <- 200
-#' p <- 80
-#' data <- 5/3 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
-#' b <- rep(1,p)/p
-#' r_init <- r0Strategy(data, b, p/n)
-#' # set a fixed shrinkage coef, only for showcasing the functions effect and
-#' # set the parameter K to an arbitrary value, as these are based on recursions
-#' # as well.
-#' psi <- 0.5
-#' rUpdateOverlapping(psi, p/n, prev_R=r_init, K=0.5)
-#'
 rUpdateOverlapping <- function(Psi, c, prev_R, K){
   Psi^2 * c/(1-c) + (1-Psi)^2*prev_R + 2*Psi*(1-Psi)*(K-1)
 }
@@ -131,9 +116,9 @@ rUpdateOverlapping <- function(Psi, c, prev_R, K){
 #' @param Ci a number equal to the concentration ratio of period i
 #' @param Cj a number equal to the concentration ratio of period j
 #'
-#' @keywords internal
-#'
 #' @return a number
+#'
+#' @keywords internal
 ComputeD <- function(Ci,Cj) {
   1- 2*(1-Cj)/(
     (1-Cj) + (1-Ci)*Cj/Ci + sqrt((1-Cj/Ci)^2 + 4*(1-Ci)*Cj/Ci)

@@ -38,7 +38,7 @@ given in Eq. (2.11) of \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio} .
 n <- 200*2
 p <- 80
 reallocation_point <- c(199)
-data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
+data <- 3/5 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
 target_portfolio <- as.vector(rep(1,p))/p
 wGMVNonOverlapping(data, reallocation_point, target_portfolio, 1)
 }

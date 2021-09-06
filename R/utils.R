@@ -9,20 +9,24 @@
 #'
 #' @return a vector, which is the Global Minimum Variance Portfolio.
 #'
-#' @example
+#' @examples
 #'
 #' n <- 200
 #' p <- 80
 #' data <- 3/5 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
 #' weights <- wGMV(data)
-#' # since the covariance matrix is the unit-matrix the weights should be close
-#' # to 1/p
+#' # since the covariance matrix is the identity-matrix the estimated weights
+#' # should be close to the equally weighted portfolio.
 #' mean(abs(wGMV(data) - 1/p))
+#'
+#' @export
 wGMV <- function(data) {
   S <- var(data)
   S_inv <- solve(S)
   S_inv%*%rep(1, nrow(S_inv)) / as.numeric(sum(S_inv))
 }
+
+
 
 #' Computes a convex combination between two vectors.
 #'
@@ -59,7 +63,7 @@ ConvexCombination <- function(x1, x2, lambda) {
 #'
 #' @return vector
 #'
-#' @example
+#' @examples
 #'
 #' n <- 200*2
 #' p <- 80

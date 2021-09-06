@@ -75,11 +75,10 @@ new_DOSPortfolio <- function(data,
 
   # TODO: better way to solve this?
   if (is.null(relative_loss)) {
-    S <- stats::var(data[1:reallocation_points[1],])
-    relative_loss <- r0Strategy(S_inv = solve(S), S=S, target_portfolio = target_portfolio,
+    relative_loss <- r0Strategy(data[1:reallocation_points[1],],
+                                target_portfolio = target_portfolio,
                                 c = ncol(data)/reallocation_points[1])
   }
-
   if (shrinkage_type == "overlapping") {
     x <- wGMVOverlapping(data, reallocation_points, target_portfolio, relative_loss)
   }else{

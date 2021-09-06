@@ -7,15 +7,14 @@
 r0Strategy(data, target_portfolio, c)
 }
 \arguments{
+\item{data}{an n by p matrix of asset returns. Columns represent different
+assets rows are observations, where n>p, containing, for instance, log-returns.}
+
 \item{target_portfolio}{a vector which determines the weights of the target
 portfolio used when the shrinkage estimator of the global minimum variance
 portfolio is constructed for the first time.}
 
 \item{c}{a numeric which is the concentration ratio.}
-
-\item{S_inv}{the inverse of a sample covariance matrix.}
-
-\item{S}{a sample covariance matrix.}
 }
 \value{
 vector
@@ -24,6 +23,16 @@ vector
 The function computes the initial value of the relative loss in the variance
 of the target portfolio as given in Eq. (2.10) of
 \insertCite{BODNAR21dynshrink;textual}{DOSPortfolio}.
+}
+\examples{
+
+n <- 200*2
+p <- 80
+data <- 5/3 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
+# set a target portfolio, such as equally weighted
+b <- rep(1,p)/p
+r0Strategy(data, b, p/n)
+
 }
 \references{
 \insertAllCited{}

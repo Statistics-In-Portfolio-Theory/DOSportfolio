@@ -41,6 +41,7 @@ reallocation_points <- c(199)
 data <- matrix(rt(n*p, df=5), ncol=p, nrow=n)
 target_portfolio <- as.vector(rep(1,p))/p
 wGMVOverlapping(data, reallocation_points, target_portfolio, 1)
+
 }
 \references{
 \insertAllCited{}

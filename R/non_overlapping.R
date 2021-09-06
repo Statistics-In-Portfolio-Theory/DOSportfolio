@@ -44,8 +44,6 @@ wGMVNonOverlapping <- function(data, reallocation_points, target_portfolio, rela
       data_subsample <- data[(reallocation_points[idx-1]):reallocation_points[idx],]
     }
     c <- p/nrow(data_subsample)
-    S <- stats::var(data_subsample)
-    S_chol_inv <- t(solve(chol(S)))
     if (idx == 1) {
       old_weights <- target_portfolio
     }else{
@@ -56,7 +54,7 @@ wGMVNonOverlapping <- function(data, reallocation_points, target_portfolio, rela
     # Compute the shrinkage coefficient
     xi <- (1 - c) * relative_loss / ((1 - c) * relative_loss + c)
     w_gmv_new <- ConvexCombination(
-      wGMV(S_chol_inv %*% t(S_chol_inv)),
+      wGMV(data),
       old_weights,
       xi)
     weights_matrix[idx,] <- w_gmv_new

@@ -3,9 +3,7 @@ test_that("interface of DOSPortfolio", {
   p <- 15
   n <- 50
   df <- 5
-  Sigma <- HDShOP::RandCovMtrx(p)
-  data <- (df/(df-2))*matrix(stats::rt(n*p, df=df), ncol=p, nrow=n) %*%
-    t(chol(Sigma))
+  data <- ((df-2)/df)*matrix(stats::rt(n*p, df=df), ncol=p, nrow=n)
   reallocation_points <- c(25, 42)
   ret <- DOSPortfolio(data, reallocation_points)
   expect_equal(class(ret), "DOSPortfolio")

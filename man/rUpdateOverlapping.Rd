@@ -24,3 +24,4 @@ This function implements equation (2.19), the recursive estimation for
 updating the relative loss in the variance of the holding portfolio in the
 overlapping scheme.
 }
+\keyword{internal}
