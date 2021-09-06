@@ -25,26 +25,39 @@ devtools::install_github("Statistics-In-Portfolio-Theory/DOSportfolio")
 This is a very simple example which shows you how use the package:
 
 ``` r
-library(DOSPorfolio)
+library(DOSPortfolio)
 n <- 25*2
 p <- 15
 # Simulate data
 data <- sqrt(5/3) * matrix(rt(n*p, df=5), ncol=p, nrow=n)
+# specify the allocation points. The DOSPortfolio class will validate what is 
+# "ok" allocation periods.
 reallocation_points <- c(25, 42)
-(portfolios <- DOSPortfolio(data, reallocation_points))
+portfolios <- DOSPortfolio(data, reallocation_points)
 ```
 
-To read the documentation you can simply use `?DOSPortfolio`.
+The variable `portfolios` is a “DOSPortfolio” class whose documentation
+can be viewed by `?DOSPortfolio`. The constructor `DOSPortfolio()` looks
+for violations against the assumptions made in the reference. Here is an
+example when things does not work
 
-## TODO:
+``` r
+reallocation_points <- c(37, 42)
+# observe that there is little data between the first and second allcoation 
+# point. Its actually to little since p > n_2, e.g. 15 > 42 - 37. 
+portfolios <- DOSPortfolio(data, reallocation_points)
+# Error
+```
 
--   Create summary function so that one can summaries the portfolios as
-    done in (Bodnar, Parolya, and Thorsen 2021).
+## Possible further scope:
+
+-   Create summary function so that one can construct summaries of the
+    portfolios as done in (Bodnar, Parolya, and Thorsen 2021).
 -   Include test on finite fourth moment, summary function to generate
     table from the article?
 -   Setup so that the portfolio estimators can work with the `tsibble`
     package?
--   Extend theory to mean-variance portfolio (…)
+-   Extend theory to mean-variance portfolio and Shrinkage estimators.
 
 # References
 

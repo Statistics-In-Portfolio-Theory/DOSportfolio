@@ -22,6 +22,7 @@ Author: Taras Bodnar [aut] (<https://orcid.org/0000-0001-7855-8221>),
 Description: 
   Constructs dynamic optimal shrinkage estimators for the weights of the global minimum variance portfolio which are reconstructed at given reallocation points as derived in Bodnar, Parolya, and Thorsén (2021) (<https://arxiv.org/abs/2106.02131>). Two dynamic shrinkage estimators are available in this package. One using overlapping samples while the other use nonoverlapping samples.
 License: GPL-3
+URL: https://github.com/Statistics-In-Portfolio-Theory/DOSportfolio 
 Encoding: UTF-8
 LazyData: true
 RdMacros: Rdpack
@@ -29,13 +30,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Depends:
     R (>= 3.5.0)
-Suggests:
-    knitr,
-    rmarkdown,
-    testthat (>= 3.0.0)
+Suggests: knitr, rmarkdown, testthat (>= 3.0.0), HDShOP
 Config/testthat/edition: 3
-Imports:
-    Rdpack (>= 0.7),
-    stats,
-    HDShOP
+Imports: Rdpack (>= 0.7)
 VignetteBuilder: knitr
