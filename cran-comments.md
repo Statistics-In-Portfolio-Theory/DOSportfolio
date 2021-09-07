@@ -1,8 +1,8 @@
 ## Submission information
 
-This is a resubmission due to an issue in the README.md which appear from 
-Rmd->md conversion where an http link was created. The link was manually 
-edited.
+This is a (second) resubmission due to an issue and a misunderstanding in the
+README.md which appear from Rmd->md conversion where an http link was created.
+The link was manually edited.
 
 ## Test environments
 
