@@ -1,3 +1,9 @@
+## Submission information
+
+This is a resubmission due to an issue in the README.md which appear from 
+Rmd->md conversion where an http link was created. The link was manually 
+edited.
+
 ## Test environments
 
 * local Windows10x64 Version 21H1
@@ -7,8 +13,9 @@
 * Debian Linux, R-devel, clang, ISO-8859-15 locale (r-hub)
 
 ## R CMD check results
-There were no ERRORs or WARNINGs though one common NOTE relating to the surnames of the authors 
-on most platforms (all except Debian Linux). Below in an excerpt of the NOTEs
+There were no ERRORs or WARNINGs though one common NOTE relating to the 
+surnames of the authors on most platforms (all except Debian Linux). Below
+in an excerpt of the NOTEs
 
 * checking CRAN incoming feasibility ... NOTE
 Maintainer: ‘Erik Thorsén <erik.thorsen@math.su.se>’

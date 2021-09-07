@@ -43,7 +43,7 @@ data <- sqrt(5/3) * matrix(rt(n*p, df=5), ncol=p, nrow=n)
 # specify the allocation points. The DOSPortfolio class will validate what is 
 # "ok" allocation periods.
 reallocation_points <- c(25, 42)
-portfolios <- DOSPortfolio(data, reallocation_points)
+(portfolios <- DOSPortfolio(data, reallocation_points))
 ```
 The variable `portfolios` is a "DOSPortfolio" class whose documentation can be 
 viewed by `?DOSPortfolio`. The constructor `DOSPortfolio()` looks for violations
