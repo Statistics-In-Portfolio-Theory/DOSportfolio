@@ -67,7 +67,7 @@ portfolios <- DOSPortfolio(data, reallocation_points)
 
 Bodnar, Taras, Nestor Parolya, and Erik Thorsén. 2021. “Dynamic
 Shrinkage Estimation of the High-Dimensional Minimum-Variance
-Portfolio.” <https://arxiv.org/abs/2106.02131/>.
+Portfolio.” <https://arxiv.org/abs/2106.02131>.
 
 </div>
 
