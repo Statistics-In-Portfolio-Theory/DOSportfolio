@@ -34,7 +34,7 @@ devtools::install_github("Statistics-In-Portfolio-Theory/DOSportfolio")
 ## Example
 
 This is a very simple example which shows you how use the package:
-```{r example, eval=FALSE}
+```{r example}
 library(DOSPortfolio)
 n <- 25*2
 p <- 15
@@ -50,14 +50,21 @@ viewed by `?DOSPortfolio`. The constructor `DOSPortfolio()` looks for violations
 against the assumptions made in the reference. Here is an example when things 
 does not work
 
-```{r example error, eval=FALSE}
+```{r example error, error=TRUE, results='asis'}
 reallocation_points <- c(37, 42)
 # observe that there is little data between the first and second allcoation 
 # point. Its actually to little since p > n_2, e.g. 15 > 42 - 37. 
-portfolios <- DOSPortfolio(data, reallocation_points)
-# Error
-```
 
+# This will cause an error
+DOSPortfolio(data, reallocation_points)
+```
+However, by using the the argument `shrinkage_type="overlapping"` we can 
+make it work!
+```{r}
+DOSPortfolio(data, reallocation_points, shrinkage_type = "overlapping")
+```
+If you want to learn to more why this is then you can have a look at the 
+_"introduction"_ vignette or read the paper!
 
 ## Possible further scope:
 

@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-This package is a collection of the methods developed in [@BODNAR21dynshrink]. It constructs sequences of estimated Global Mimimum Variance (GMV) portfolios. The concept of a portfolio is most often used in finance as a way to invest in financial assets (e.g. stocks), which is the applications we will have in mind. There are other applications of these types of estimators, such as signal processing. The simplest example of a portfolio is the equally weighted (EW) portfolio which says that you should invest equal amount in every assets. If you have $p$ assets, then each asset gets $1/p$ of your money. 
+This package is a collection of the methods developed in [@BODNAR21dynshrink]. It constructs sequences of estimated Global Mimimum Variance (GMV) portfolios. The concept of a portfolio is most often used in finance as a way to invest in financial assets (e.g. stocks), which are the applications we will have in mind. There are other applications of these types of estimators, such as signal processing. The simplest example of a portfolio is the equally weighted (EW) portfolio which says that you should invest equal amount in every assets. If you have $p$ assets, then each asset gets $1/p$ of your money. 
 
 # How to use the package
 
@@ -29,9 +29,7 @@ The main interface to the package is `DOSPortfolio::DOSPortfolio` which acts as 
 ```{r sims}
 n <- 25*2
 p <- 15
-# generate a covariance matrix
-Sigma <- HDShOP::RandCovMtrx(p)
-data <- 5/3 * matrix(rt(n*p, df=5), ncol=p, nrow=n) %*% t(chol(Sigma))
+data <- 5/3 * matrix(rt(n*p, df=5), ncol=p, nrow=n)
 ```
 Notice that it is a matrix on _long_ format. Each column is assumed to be the time series of an asset. _We assume that the returns are ordered in time_. The observation on the first row was observed before the observations on the second and so forth. To construct the DOS portfolio we need to specify the number of _reallocation points_ and when these happen. Since `data` is a matrix on long format, we work with the row index. The DOS portfolio is then constructed as
 ```{r dosportfolio}
@@ -53,13 +51,23 @@ However, this will work
 ```{r}
 (portfolios <- DOSPortfolio(data, reallocation_points, shrinkage_type = "overlapping"))
 ```
-The issue concerns what is called the "concentration ratio" which we denote $c_i=p/n_i$, where $n_i$ is the size of each subsample. In our case these are `r diff(c(0,reallocation_points))`. When the methods are derived for the "non-overlapping" shrinkage estimator it is assumed that $c_i \in (0,1)$. For the "non-overlapping" estimator we do not need to make such a rigid assumption, we only need that the first value $c_1 \in (0,1)$ and the rest can be $p>n_j$ for $j=2,...,T$. 
+The issue concerns what is called the "concentration ratio" which we denote 
+$c_i=p/n_i$, where $n_i$ is the size of each subsample. In our case these are 
+`r diff(c(0,reallocation_points))`. When the methods are derived for the 
+"non-overlapping" shrinkage estimator it is assumed that $c_i \in (0,1)$. This
+is due to the assumption that the sample covariance matrix needs to be 
+non-singular. For the "non-overlapping" estimator we do not need to make such a 
+rigid assumption, we only need that the first value $c_1 \in (0,1)$ and the rest
+can be $p>n_j$ for $j=2,...,T$. One methods moves in windows of size $n_i$ and 
+the other extends the data to include all observations. We use $N_I=\sum_i^I n_i$
+data to estimate each portfolio weight.
 
 The last two parameters that are available to configure is the target portfolio, which we will denote $\mathbf{b}$, and an intial seed/estimate for the relative loss parameter. The target portfolio can be any portfolio whose values sums to one. The default value is the EW portfolio previously mentioned but it can be any other portfolio of your choice. 
 ```{r}
+reallocation_points <- c(25, 42)
 new_target <- runif(p, -1, 1)
 new_target<- new_target/sum(new_target)
-(portfolios <- DOSPortfolio(data, reallocation_points, shrinkage_type = "overlapping", target_portfolio = new_target))
+(portfolios <- DOSPortfolio(data, reallocation_points, target_portfolio = new_target))
 ```
 
 The initial estimate for the relative loss parameter demands some more detail. The `relative_loss` refers to how the following quantity
@@ -71,7 +79,7 @@ which describes how the variance of our target portfolio $\mathbf{b}'\boldsymbol
 ## A note on the assumptions made in DOSPortfolio
 The statistical model we make use of to derive the methods is
 $$
-\mathbf{Y}_{n_i} = \mathbf{1}\boldsymbol{\mu}' + \mathbf{X}_{n_i} \boldsymbol{\Sigma}^{1/2} 
+\mathbf{Y}_{n_i} = \mathbf{1}_{n_i}\boldsymbol{\mu}' + \mathbf{X}_{n_i} \boldsymbol{\Sigma}^{1/2} 
 $$
 where $i=1,2,...,T$ is the number of reallocation points in the model. A reallocation point is just when we will reweight the portfolio, that is transition from one existing portfolio to another. Note that we can only observe $\mathbf{Y}_i$ but when constructing GMV portfolios we are interested in estimating $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$. We make the following assumptions
 
@@ -81,8 +89,8 @@ where $i=1,2,...,T$ is the number of reallocation points in the model. A realloc
 
 The first assumption is standard to make in finance but enforce the end-user to verify that its true.  
 The second assumption implies that we do not tell you when you should reweight a portfolio, we simply say that they are given. Although this assumption has little practical relevance, it is an assumption that is more philosophical and hard to test.
-The third assumption is also somewhat philosophical. The target portfolio is chosen by the end-user though we need to have that the quantity $\mathbf{b}' \boldsymbol{\Sigma}\mathbf{b}$ to be finite for out methods to make sense. This makes some assumptions on the relation between the true covariance matrix $\boldsymbol{\Sigma}$ and how it relates to $\mathbf{b}$. This is a formal assumption though important. 
+The third assumption is also somewhat philosophical. The target portfolio is chosen by the end-user though we need to have that the quantity $\mathbf{b}' \boldsymbol{\Sigma}\mathbf{b}$ to be finite for our methods to work. This makes some assumptions on the relation between the true covariance matrix $\boldsymbol{\Sigma}$ and how it relates to $\mathbf{b}$. An important assumption that is hard to verify!
 
-The sequences of portfolios are constructed to make as smooth transitions as possible from one portfolio to another. The transitions are made to be "optimal" when you have many assets $p$ in comparison to observations $n$, which is usually characterized by the concentration ratio $c=p/n \in (0,1)$. When $c$ is close to 1 we have very little data in comparison to how many parameters we need to estimate. Note that we do not cover $c>1$, though our aim is to do so in the future.
+The sequences of portfolios are constructed to make as smooth transitions as possible from one portfolio to another. The transitions are made to be "optimal" when you have many assets $p$ in comparison to observations $n$, which is usually characterized by the concentration ratio $c=p/n \in (0,1)$. When $c$ is close to 1 we have very little data in comparison to how many parameters we need to estimate. Note that we do not cover $c>1$ for non-overlapping estimators, though our aim is to do so in the future.
 
 # References

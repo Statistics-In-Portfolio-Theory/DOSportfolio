@@ -1,8 +1,12 @@
 ## Submission information
 
-This is a (second) resubmission due to an issue and a misunderstanding in the
+This is a (third) resubmission due to an issue and a misunderstanding in the
 README.md which appear from Rmd->md conversion where an http link was created.
-The link was manually edited.
+
+The change has now been made in the `.bib` file from `@misc{...}` to 
+`@article{...}`. The url is now hardcoded and parses correctly from 
+`.Rmd -> .md` in the introduction vignette and README.
+
 
 ## Test environments
 
